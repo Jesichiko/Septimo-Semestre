@@ -1,0 +1,4 @@
+Para poder satisfacer el problema de optimización de tiempo, se colocará un modelo por edificio con los recursos ideales teniendo cada modulo un grupo encargado para repartir recursos ya sea un mensajero que reparta pambazos y otros refrescos y estos sean 2 por salon y en caso de que se queden sin recursos puedan regresar a su modulo para reabasteserce y los resagados puedan ir al modullo directamente ya sean los que estan en los pasillos, fuera de clase, etc.
+Podemos decir que cada modulo atiende al mismo tiempo un salon y que los pambazos ya estan hechos.
+2*n*5+15
+Donde N es el numero de salones
