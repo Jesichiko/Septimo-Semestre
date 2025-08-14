@@ -1,0 +1,1 @@
+De [[Programas URM]], ejecutar el programa con la configuración $2, 3, 0, 0, 0$ y explicar por que se cicla.
