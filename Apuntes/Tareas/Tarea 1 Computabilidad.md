@@ -1,0 +1,1 @@
+Del ejemplo _URM_ de [[Programas URM]], correr el programa con la configuración del **pdf 1 de Teams:**
