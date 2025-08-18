@@ -75,5 +75,3 @@ se define como $P(r_1, r_2, ..., r_n, r_{n+1})$.
 
 **Obs**. Recordemos funciones: **Parciales y totales**
 Las *URM* calculan **funciones parciales**
-
-H

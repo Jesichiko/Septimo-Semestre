@@ -8,12 +8,11 @@
 
 int main() {
   int sock, conexion_exitosa, mensaje_enviado, mensaje_recibido;
-  struct sockaddr_in addr;
   char mensaje[] = "Hola servidor TCP!";
+  struct sockaddr_in addr;
   char respuesta[1024];
 
   sock = socket(AF_INET, SOCK_STREAM, 0);
-
   if (sock == -1) {
     printf("Error al crear el socket, terminando cliente...");
     exit(-1);
@@ -21,7 +20,7 @@ int main() {
 
   addr.sin_family = AF_INET;
   addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-  addr.sin_port = htons(8080);
+  addr.sin_port = htons(20000);
 
   // Conectamos al servidor.c
   conexion_exitosa = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
