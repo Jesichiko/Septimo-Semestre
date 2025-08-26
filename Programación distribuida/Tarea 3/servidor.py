@@ -39,6 +39,10 @@ def is_mensaje_siguiente(seq_anterior: int, seq_recibido: int) -> bool:
 def threeway_handshake(socket: socket.socket, seq_server: int) -> tuple:
     buffer = 1024
 
+    # En cada mensaje enviamos:
+    # Sequencia_propia\n
+    # Sequencia_del_otro +1
+    # Banderas (ACK, SYN)
     try:
 
         # 1. Recibir SYN del cliente
@@ -46,7 +50,7 @@ def threeway_handshake(socket: socket.socket, seq_server: int) -> tuple:
         datos = data.decode("utf-8").split("\n")
 
         if len(datos) < 2 or datos[-1] != "SYN":
-            print("Error: Mensaje SYN no válido recibido")
+            print("Error: Mensaje SYN no valido recibido")
             return None, None
 
         seq_cliente = int(datos[0])
@@ -216,3 +220,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
+TO DO:
+    1. CRC
+    2. Checksums
+    3. Pool de seqs por parte del sorted
+    4. Hilos
+"""
