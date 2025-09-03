@@ -12,4 +12,4 @@ Hay dos tipos de cifrado: **Asimetrico y Simetro**.
 
 Aunque la **encriptación asimétrica es lenta y costosa, solo se utiliza para crear la clave de encriptación compartida. Después de eso, se utiliza la encriptación simétrica, que es rápida y económica.**
 
-La **clave compartida**
+La **clave compartida** se renegocia periódicamente para minimizar la cantidad de datos que se pueden descifrar si la clave compartida se rompe

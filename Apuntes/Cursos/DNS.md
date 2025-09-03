@@ -1,0 +1,2 @@
+La **resolución de nombres de dominio** es el servicio que se encarga de traducir **URLS en Direcciones IP**. 
+Usualmente, el proveedor de internet proporciona la IP de sus propios servidores DNS o suelen utilizarse públicos (8.8.8.8 y 9.9.9.9)
