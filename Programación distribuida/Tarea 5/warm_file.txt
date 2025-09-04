@@ -1,3 +1,4 @@
-hol.txt 500 0
-ipsum.txt 500 1
-xaaad.txt 500 2
+hol.txt 100 0
+ipsum.txt 100 1
+tilin.txt 100 2
+xaaad.txt 100 3

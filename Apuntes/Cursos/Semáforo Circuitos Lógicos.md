@@ -21,6 +21,7 @@ Para el **problema del circuito para un semáforo** tenemos los siguientes valor
 Lo cual las **funciones booleanas** se convierten en:$$f_{rojo}(x,y,z,w)=\sum(m_1,m_2,...,m_6)$$
 $$f_{amarillo}(x,y,z,w) = \sum(m_7,m_8,...,m_{10})$$
 $$f_{verde}(x,y,z,w)=\sum(m_{11},m_{12},...,m_{16})$$
-Podemos optimizar el circuito con las siguientes combinaciones de miniterminos:
-1. $n_1 = \bar{x}\ \bar{y}$
-2. $n_2= \bar{z} \ \bar{w}$
+Siguiendo **reglas booleanas esto queda como:**
+$$f_{rojo}(x,y,z,w) = \bar{x}$$
+$$f_{amarillo}(x,y,z,w)=\bar{x}yz \ + \ x \bar{y}\bar{z}$$
+$$f_{verde}(x,y,z,w)=xy \ + \ xz$$

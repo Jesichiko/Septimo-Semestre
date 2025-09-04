@@ -93,7 +93,7 @@ def existe_archivo(nombre_archivo: str, archivos_existentes: list) -> bool:
     return False
 
 
-def detectar_cambios(archivos_anteriores, archivos_nuevos):
+def detectar_cambios(archivos_anteriores, archivos_nuevos) -> bool:
     nombres_anteriores = {a.nombre for a in archivos_anteriores}
     nombres_nuevos = {a.nombre for a in archivos_nuevos}
 
@@ -105,6 +105,8 @@ def detectar_cambios(archivos_anteriores, archivos_nuevos):
     if eliminados:
         logging.info(f"Archivos eliminados: {list(eliminados)}")
 
+    return agregados > 0
+
 
 def actualizar_archivos(
     carpeta: str,
@@ -113,16 +115,22 @@ def actualizar_archivos(
     warm_file: str,
 ):
     global archivos_disponibles
+    global tiempo
+    tiempo = 10
     while True:
         try:
-            time.sleep(10)
+            time.sleep(100)
 
             archivos_anteriores = archivos_disponibles.copy()
-            nuevos_archivos = leer_archivos(carpeta, nombres_a_saltar, ttl_segundos)
+            nuevos_archivos = leer_archivos(
+                carpeta, nombres_a_saltar, ttl_segundos)
 
             with archivos_lock:
                 archivos_disponibles = nuevos_archivos
-                detectar_cambios(archivos_anteriores, nuevos_archivos)
+                if not detectar_cambios(archivos_anteriores, nuevos_archivos):
+                    tiempo += 20
+                else:
+                    tiempo = 10
 
                 guardar_warm_file(warm_file, archivos_disponibles)
 
@@ -210,11 +218,13 @@ def main():
         archivos_iniciales = cargar_warm_file(warm_file)
         if not archivos_iniciales:
             nombres_a_saltar = leer_nombres_a_saltar(archivo_indices)
-            archivos_iniciales = leer_archivos(carpeta, nombres_a_saltar, ttl_segundos)
+            archivos_iniciales = leer_archivos(
+                carpeta, nombres_a_saltar, ttl_segundos)
     else:
         print("Archivo warm no encontrado, cargando desde 0")
         nombres_a_saltar = leer_nombres_a_saltar(archivo_indices)
-        archivos_iniciales = leer_archivos(carpeta, nombres_a_saltar, ttl_segundos)
+        archivos_iniciales = leer_archivos(
+            carpeta, nombres_a_saltar, ttl_segundos)
         guardar_warm_file(warm_file, archivos_iniciales)
         print(
             f"Archivo {warm_file} creado con {
@@ -239,7 +249,8 @@ def main():
 
     hilo_actualizador = threading.Thread(
         target=actualizar_archivos,
-        args=(carpeta, leer_nombres_a_saltar(archivo_indices), ttl_segundos, warm_file),
+        args=(carpeta, leer_nombres_a_saltar(
+            archivo_indices), ttl_segundos, warm_file),
         daemon=True,
     )
     hilo_actualizador.start()
