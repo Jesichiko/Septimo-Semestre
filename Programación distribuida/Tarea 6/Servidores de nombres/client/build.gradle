@@ -16,7 +16,7 @@ dependencies {
     implementation libs.guava
     
     // GSON
-    implementantion libs.gson
+    implementation libs.gson
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

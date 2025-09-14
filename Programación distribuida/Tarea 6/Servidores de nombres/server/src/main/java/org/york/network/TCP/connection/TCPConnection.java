@@ -8,12 +8,10 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Random;
-
 import org.york.network.TCP.packet.*;
 
 public abstract class TCPConnection {
-  private static final Long MAX_SEQUENCE = (long)Math.pow(2, 32) - 1;
-  private long lastSequenceNumber;
+  private static final Long MAX_SEQUENCE = (long) Math.pow(2, 32) - 1;
   protected long expectedSequenceNumber;
 
   private long myNumber, myAckNumber;
@@ -23,16 +21,27 @@ public abstract class TCPConnection {
     this.socket = new DatagramSocket(port, ip);
 
     this.myNumber = new Random().nextLong() & MAX_SEQUENCE;
+    this.expectedSequenceNumber = 0;
     this.myAckNumber = 0;
   }
 
   private void updateAfterSend(TCPPacket sentPacket) {
-    lastSequenceNumber = (lastSequenceNumber + 1) % (MAX_SEQUENCE + 1);
+    byte[] data = sentPacket.getData();
+    int dataLength = (data != null) ? data.length : 0;
+    if (sentPacket.isSyn() || sentPacket.isFin()) {
+      dataLength = 1;
+    }
+    this.myNumber = (this.myNumber + dataLength) % (MAX_SEQUENCE + 1);
   }
 
-  private void updateAfterReceive(TCPPacket receivedPacket) {
-    expectedSequenceNumber =
-        (receivedPacket.getSequenceNumber() + 1) % (MAX_SEQUENCE + 1);
+  protected void updateAfterReceive(TCPPacket receivedPacket) {
+    byte[] data = receivedPacket.getData();
+    int dataLength = (data != null) ? data.length : 0;
+    if (receivedPacket.isSyn() || receivedPacket.isFin()) {
+      dataLength = 1;
+    }
+    expectedSequenceNumber = (receivedPacket.getSequenceNumber() + dataLength) % (MAX_SEQUENCE + 1);
+    this.myAckNumber = expectedSequenceNumber;
   }
 
   protected boolean sendPacket(TCPPacket packet, SocketAddress destination)
@@ -58,44 +67,63 @@ public abstract class TCPConnection {
     socket.receive(dgramBuff);
 
     // Deserializamos el packet:
-    TCPPacket deserializedPacket =
-        TCPPacketSerializer.deserialize(dgramBuff.getData());
+    TCPPacket deserializedPacket = TCPPacketSerializer.deserialize(dgramBuff.getData());
 
     // Validamos checksums:
     if (!TCPPacketValidator.validateChecksum(deserializedPacket))
       throw new SocketException("Error de checksum en paquete recibido");
 
     // Validamos secuencias
-    if (!TCPPacketValidator.validateSequenceNumbers(
-            expectedSequenceNumber - 1, deserializedPacket.getAckNumber()))
+    if (expectedSequenceNumber != 0 &&
+        deserializedPacket.getSequenceNumber() != expectedSequenceNumber) {
       throw new SocketException("Error de secuencias de paquete esperadas");
+    }
 
     // Actualizamos secuencias:
     updateAfterReceive(deserializedPacket);
     return deserializedPacket;
   }
-  
-  public boolean sendTo(byte[] data, int port, String addr) throws IOException{
+
+  private TCPPacket createDataPacket(byte[] data, int port) {
+    return new TCPPacket.Builder()
+        .sourcePort(socket.getLocalPort())
+        .destinationPort(port)
+        .sequenceNumber(myNumber)
+        .ackNumber(myAckNumber)
+        .syn(false)
+        .ack(true)
+        .fin(false)
+        .data(data)
+        .build();
+  }
+
+  protected TCPPacket createControlPacket(int destinationPort, boolean syn,
+      boolean ack, boolean fin) {
+    return new TCPPacket.Builder()
+        .sourcePort(socket.getLocalPort())
+        .destinationPort(destinationPort)
+        .sequenceNumber(myNumber)
+        .ackNumber(myAckNumber)
+        .syn(syn)
+        .ack(ack)
+        .fin(fin)
+        .build();
+  }
+
+  public boolean sendTo(byte[] data, int port, String addr) throws IOException {
     // Creamos el TCPPacket con la data
-    TCPPacket packet = new TCPPacket.Builder()
-      .sourcePort(socket.getPort())
-      .destinationPort(port)
-      .sequenceNumber(myNumber)
-      .ackNumber(myAckNumber)
-      .syn(false)
-      .ack(true)
-      .fin(false)
-      .data(data)
-      .build();
+    TCPPacket packet = createDataPacket(data, port);
+    return sendPacket(packet, new InetSocketAddress(addr, port));
+  }
 
-    return sendPacket(packet,new InetSocketAddress(addr, port));
+  public DatagramPacket receiveFrom(int buffer)
+      throws SocketException, IOException {
+    return new DatagramPacket(
+        TCPPacketSerializer.serialize(receivePacket(buffer)), buffer);
   }
-  
-  public DatagramPacket receiveFrom(int buffer) throws SocketException, IOException{
-    return new DatagramPacket(TCPPacketSerializer.serialize(receivePacket(buffer)), buffer);
-  }
+
   // Handshakes que son distintos en cliente y server
-  protected abstract boolean connect();
+  protected abstract boolean connect() throws IOException;
 
-  public abstract boolean close();
+  public abstract boolean close() throws IOException;
 }
