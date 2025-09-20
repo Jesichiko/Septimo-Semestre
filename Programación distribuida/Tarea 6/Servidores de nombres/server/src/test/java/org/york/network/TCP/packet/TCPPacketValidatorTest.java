@@ -1,153 +1,107 @@
-package org.york.network.TCP.connection;
+package org.york.network.TCP.packet;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
-public class TCPConnectionTest {
+public class TCPPacketValidatorTest {
     
-    private TCPServerConnection server;
-    private TCPClientConnection client;
-    private Thread serverThread;
-    private Thread clientThread;
+    private TCPPacket testPacket;
     
     @BeforeEach
-    void setUp() throws SocketException, UnknownHostException {
-        server = new TCPServerConnection(8080, "localhost");
-        client = new TCPClientConnection(0, "localhost", 8080);
-    }
-    
-    @AfterEach
-    void tearDown() {
-        if (serverThread != null) serverThread.interrupt();
-        if (clientThread != null) clientThread.interrupt();
-    }
-    
-    @Test
-    void testServerCreation() {
-        assertNotNull(server);
+    void setUp() {
+        testPacket = new TCPPacket.Builder()
+            .sourcePort(8080)
+            .destinationPort(9090)
+            .sequenceNumber(1000L)
+            .ackNumber(2000L)
+            .syn(true)
+            .ack(false)
+            .fin(false)
+            .data("Test data".getBytes())
+            .build();
     }
     
     @Test
-    void testClientCreation() {
-        assertNotNull(client);
+    void testCalculateChecksum() {
+        int checksum = TCPPacketValidator.calculateChecksum(testPacket);
+        
+        // El checksum debe ser un número válido de 16 bits
+        assertTrue(checksum >= 0 && checksum <= 0xFFFF);
+        
+        // Calcular dos veces debe dar el mismo resultado
+        int checksum2 = TCPPacketValidator.calculateChecksum(testPacket);
+        assertEquals(checksum, checksum2);
     }
     
     @Test
-    void testThreeWayHandshake() throws InterruptedException {
-        boolean[] serverResult = {false};
-        boolean[] clientResult = {false};
-        Exception[] serverException = {null};
-        Exception[] clientException = {null};
+    void testValidateChecksumValid() {
+        // Calcular checksum correcto
+        int correctChecksum = TCPPacketValidator.calculateChecksum(testPacket);
+        TCPPacket packetWithChecksum = testPacket.withChecksum(correctChecksum);
         
-        serverThread = new Thread(() -> {
-            try {
-                serverResult[0] = server.accept();
-            } catch (Exception e) {
-                serverException[0] = e;
-            }
-        });
+        // Debe validar como correcto
+        assertTrue(TCPPacketValidator.validateChecksum(packetWithChecksum));
+    }
+    
+    @Test
+    void testValidateChecksumInvalid() {
+        // Usar checksum incorrecto
+        TCPPacket packetWithBadChecksum = testPacket.withChecksum(12345);
         
-        clientThread = new Thread(() -> {
-            try {
-                Thread.sleep(100);
-                clientResult[0] = client.connect();
-            } catch (Exception e) {
-                clientException[0] = e;
-            }
-        });
-        
-        serverThread.start();
-        clientThread.start();
-        
-        serverThread.join(5000);
-        clientThread.join(5000);
-        
-        if (serverException[0] != null) {
-            fail("Server exception: " + serverException[0].getMessage());
+        // Debe validar como incorrecto (a menos que por casualidad sea correcto)
+        int correctChecksum = TCPPacketValidator.calculateChecksum(testPacket);
+        if (correctChecksum != 12345) {
+            assertFalse(TCPPacketValidator.validateChecksum(packetWithBadChecksum));
         }
-        if (clientException[0] != null) {
-            fail("Client exception: " + clientException[0].getMessage());
-        }
-        
-        assertTrue(serverResult[0], "Server handshake should succeed");
-        assertTrue(clientResult[0], "Client handshake should succeed");
     }
     
     @Test
-    void testDataTransmission() throws InterruptedException {
-        byte[] testData = "Hello from client".getBytes();
-        boolean[] serverAccepted = {false};
-        byte[][] receivedData = {null};
-        int serverPort = server.socket.getLocalPort();
+    void testValidateSequenceNumbers() {
+        // Casos válidos
+        assertTrue(TCPPacketValidator.validateSequenceNumbers(99L, 100L));
+        assertTrue(TCPPacketValidator.validateSequenceNumbers(0L, 1L));
         
-        serverThread = new Thread(() -> {
-            try {
-                serverAccepted[0] = server.accept();
-                if (serverAccepted[0]) {
-                    receivedData[0] = server.receiveFrom(1024).getData();
-                }
-            } catch (Exception e) {
-                fail("Server error: " + e.getMessage());
-            }
-        });
+        // Caso de wraparound válido
+        long maxSeq = (long) Math.pow(2, 32) - 1;
+        assertTrue(TCPPacketValidator.validateSequenceNumbers(maxSeq, 0L));
         
-        clientThread = new Thread(() -> {
-            try {
-                Thread.sleep(100);
-                client.connect();
-                client.sendTo(testData, serverPort, "localhost");
-            } catch (Exception e) {
-                fail("Client error: " + e.getMessage());
-            }
-        });
-        
-        serverThread.start();
-        clientThread.start();
-        
-        serverThread.join(5000);
-        clientThread.join(5000);
-        
-        assertTrue(serverAccepted[0]);
-        assertNotNull(receivedData[0]);
+        // Casos inválidos
+        assertFalse(TCPPacketValidator.validateSequenceNumbers(100L, 99L));
+        assertFalse(TCPPacketValidator.validateSequenceNumbers(100L, 102L));
     }
     
     @Test
-    void testConnectionClose() throws InterruptedException {
-        boolean[] handshakeComplete = {false, false};
-        boolean[] closeComplete = {false, false};
+    void testChecksumWithDifferentData() {
+        TCPPacket packet1 = new TCPPacket.Builder()
+            .sourcePort(8080)
+            .destinationPort(9090)
+            .data("Data 1".getBytes())
+            .build();
+            
+        TCPPacket packet2 = new TCPPacket.Builder()
+            .sourcePort(8080)
+            .destinationPort(9090)
+            .data("Data 2".getBytes())
+            .build();
+            
+        int checksum1 = TCPPacketValidator.calculateChecksum(packet1);
+        int checksum2 = TCPPacketValidator.calculateChecksum(packet2);
         
-        serverThread = new Thread(() -> {
-            try {
-                handshakeComplete[0] = server.accept();
-                closeComplete[0] = server.close();
-            } catch (Exception e) {
-                fail("Server error: " + e.getMessage());
-            }
-        });
+        // Diferentes datos deben producir diferentes checksums
+        assertNotEquals(checksum1, checksum2);
+    }
+    
+    @Test
+    void testChecksumWithEmptyData() {
+        TCPPacket packetWithoutData = new TCPPacket.Builder()
+            .sourcePort(8080)
+            .destinationPort(9090)
+            .build();
+            
+        int checksum = TCPPacketValidator.calculateChecksum(packetWithoutData);
+        TCPPacket packetWithChecksum = packetWithoutData.withChecksum(checksum);
         
-        clientThread = new Thread(() -> {
-            try {
-                Thread.sleep(100);
-                handshakeComplete[1] = client.connect();
-                Thread.sleep(100);
-                closeComplete[1] = client.close();
-            } catch (Exception e) {
-                fail("Client error: " + e.getMessage());
-            }
-        });
-        
-        serverThread.start();
-        clientThread.start();
-        
-        serverThread.join(10000);
-        clientThread.join(10000);
-        
-        assertTrue(handshakeComplete[0] && handshakeComplete[1]);
-        assertTrue(closeComplete[0] && closeComplete[1]);
+        assertTrue(TCPPacketValidator.validateChecksum(packetWithChecksum));
     }
 }

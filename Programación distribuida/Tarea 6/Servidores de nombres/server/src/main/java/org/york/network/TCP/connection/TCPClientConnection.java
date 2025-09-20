@@ -34,7 +34,7 @@ public class TCPClientConnection extends TCPConnection{
     // 2. Recibir SYN-ACK
     TCPPacket synAckResponse = receivePacket(1024);
     if (!synAckResponse.isSyn() || !synAckResponse.isAck()) {
-      throw new IOException("Esperaba SYN-ACK, recibí otra cosa");
+      throw new IOException("Error 3-way Handshake: Se esperaba SYN-ACK");
     }
 
     // 3. Enviar ACK final
@@ -55,7 +55,7 @@ public class TCPClientConnection extends TCPConnection{
     // 2. Recibir ACK
     TCPPacket ackResponse = receivePacket(1024);
     if (!ackResponse.isAck()) {
-      throw new IOException("Esperaba ACK del FIN");
+      throw new IOException("Error 4-way Handshake: Se esperaba ACK");
     }
 
     // 3. Recibir FIN

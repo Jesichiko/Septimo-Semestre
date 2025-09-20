@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.york.network.TCP.packet.TCPPacketValidatorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-09-14T04:09:36.226Z" hostname="cherryblossoms" time="0.006">
+<testsuite name="org.york.network.TCP.packet.TCPPacketValidatorTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2025-09-14T04:33:14.683Z" hostname="cherryblossoms" time="0.014">
   <properties/>
-  <testcase name="testChecksumCalculation()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.001"/>
-  <testcase name="testChecksumValidation()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.002"/>
-  <testcase name="testSequenceNumberValidation()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.001"/>
+  <testcase name="testChecksumWithEmptyData()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.002"/>
+  <testcase name="testChecksumWithDifferentData()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.003"/>
+  <testcase name="testCalculateChecksum()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.001"/>
+  <testcase name="testValidateSequenceNumbers()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.001"/>
+  <testcase name="testValidateChecksumInvalid()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.001"/>
+  <testcase name="testValidateChecksumValid()" classname="org.york.network.TCP.packet.TCPPacketValidatorTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

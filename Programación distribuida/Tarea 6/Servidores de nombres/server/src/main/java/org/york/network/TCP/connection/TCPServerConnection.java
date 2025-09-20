@@ -14,7 +14,7 @@ public class TCPServerConnection extends TCPConnection {
   private InetAddress clientAddress;
   private int clientPort;
 
-  TCPServerConnection(int port, String addr) throws SocketException, UnknownHostException {
+  public TCPServerConnection(int port, String addr) throws SocketException, UnknownHostException {
     super(port, InetAddress.getByName(addr));
   }
 

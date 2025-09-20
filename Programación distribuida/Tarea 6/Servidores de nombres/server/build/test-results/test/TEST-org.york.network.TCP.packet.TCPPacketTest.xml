@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.york.network.TCP.packet.TCPPacketTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-09-14T04:09:36.233Z" hostname="cherryblossoms" time="0.009">
+<testsuite name="org.york.network.TCP.packet.TCPPacketTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-09-14T04:33:14.656Z" hostname="cherryblossoms" time="0.023">
   <properties/>
-  <testcase name="testBuilderValidation()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.002"/>
-  <testcase name="testPacketCreation()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.002"/>
-  <testcase name="testPacketWithChecksum()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.001"/>
-  <testcase name="testSerializationDeserialization()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.002"/>
-  <testcase name="testPacketWithData()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.001"/>
+  <testcase name="testBuilderValidation()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.005"/>
+  <testcase name="testPacketCreation()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.004"/>
+  <testcase name="testPacketWithChecksum()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.002"/>
+  <testcase name="testSerializationDeserialization()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.004"/>
+  <testcase name="testPacketWithData()" classname="org.york.network.TCP.packet.TCPPacketTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,97 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.york.network.TCP.connection.TCPConnectionTest" tests="5" skipped="0" failures="5" errors="0" timestamp="2025-09-14T04:09:36.052Z" hostname="cherryblossoms" time="0.171">
+<testsuite name="org.york.network.TCP.connection.TCPConnectionTest" tests="5" skipped="0" failures="2" errors="0" timestamp="2025-09-14T04:33:03.947Z" hostname="cherryblossoms" time="10.694">
   <properties/>
-  <testcase name="testDataTransmission()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.157">
-    <failure message="org.opentest4j.AssertionFailedError: expected: not &lt;null&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: not &lt;null&gt;
+  <testcase name="testDataTransmission()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.25">
+    <failure message="org.opentest4j.AssertionFailedError: Should receive data ==&gt; expected: not &lt;null&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: Should receive data ==&gt; expected: not &lt;null&gt;
 	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
 	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
 	at app//org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
 	at app//org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
-	at app//org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:30)
-	at app//org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:304)
-	at app//org.york.network.TCP.connection.TCPConnectionTest.testDataTransmission(TCPConnectionTest.java:115)
+	at app//org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at app//org.york.network.TCP.connection.TCPConnectionTest.testDataTransmission(TCPConnectionTest.java:151)
 	at java.base@21.0.7/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base@21.0.7/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base@21.0.7/java.util.ArrayList.forEach(ArrayList.java:1596)
 </failure>
   </testcase>
-  <testcase name="testThreeWayHandshake()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.005">
-    <failure message="java.net.BindException: Address already in use" type="java.net.BindException">java.net.BindException: Address already in use
-	at java.base/sun.nio.ch.Net.bind0(Native Method)
-	at java.base/sun.nio.ch.Net.bind(Net.java:565)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bindInternal(DatagramChannelImpl.java:1329)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bind(DatagramChannelImpl.java:1299)
-	at java.base/sun.nio.ch.DatagramSocketAdaptor.bind(DatagramSocketAdaptor.java:108)
-	at java.base/java.net.DatagramSocket.createDelegate(DatagramSocket.java:1425)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:328)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:387)
-	at org.york.network.TCP.connection.TCPConnection.&lt;init&gt;(TCPConnection.java:22)
-	at org.york.network.TCP.connection.TCPServerConnection.&lt;init&gt;(TCPServerConnection.java:18)
-	at org.york.network.TCP.connection.TCPConnectionTest.setUp(TCPConnectionTest.java:19)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  <testcase name="testThreeWayHandshake()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.108"/>
+  <testcase name="testConnectionClose()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="10.316">
+    <failure message="org.opentest4j.AssertionFailedError: Server exception: Error de secuencias de paquete esperadas" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: Server exception: Error de secuencias de paquete esperadas
+	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at app//org.york.network.TCP.connection.TCPConnectionTest.testConnectionClose(TCPConnectionTest.java:188)
+	at java.base@21.0.7/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.7/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.7/java.util.ArrayList.forEach(ArrayList.java:1596)
 </failure>
   </testcase>
-  <testcase name="testConnectionClose()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.002">
-    <failure message="java.net.BindException: Address already in use" type="java.net.BindException">java.net.BindException: Address already in use
-	at java.base/sun.nio.ch.Net.bind0(Native Method)
-	at java.base/sun.nio.ch.Net.bind(Net.java:565)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bindInternal(DatagramChannelImpl.java:1329)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bind(DatagramChannelImpl.java:1299)
-	at java.base/sun.nio.ch.DatagramSocketAdaptor.bind(DatagramSocketAdaptor.java:108)
-	at java.base/java.net.DatagramSocket.createDelegate(DatagramSocket.java:1425)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:328)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:387)
-	at org.york.network.TCP.connection.TCPConnection.&lt;init&gt;(TCPConnection.java:22)
-	at org.york.network.TCP.connection.TCPServerConnection.&lt;init&gt;(TCPServerConnection.java:18)
-	at org.york.network.TCP.connection.TCPConnectionTest.setUp(TCPConnectionTest.java:19)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-</failure>
-  </testcase>
-  <testcase name="testClientCreation()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.002">
-    <failure message="java.net.BindException: Address already in use" type="java.net.BindException">java.net.BindException: Address already in use
-	at java.base/sun.nio.ch.Net.bind0(Native Method)
-	at java.base/sun.nio.ch.Net.bind(Net.java:565)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bindInternal(DatagramChannelImpl.java:1329)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bind(DatagramChannelImpl.java:1299)
-	at java.base/sun.nio.ch.DatagramSocketAdaptor.bind(DatagramSocketAdaptor.java:108)
-	at java.base/java.net.DatagramSocket.createDelegate(DatagramSocket.java:1425)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:328)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:387)
-	at org.york.network.TCP.connection.TCPConnection.&lt;init&gt;(TCPConnection.java:22)
-	at org.york.network.TCP.connection.TCPServerConnection.&lt;init&gt;(TCPServerConnection.java:18)
-	at org.york.network.TCP.connection.TCPConnectionTest.setUp(TCPConnectionTest.java:19)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-</failure>
-  </testcase>
-  <testcase name="testServerCreation()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.002">
-    <failure message="java.net.BindException: Address already in use" type="java.net.BindException">java.net.BindException: Address already in use
-	at java.base/sun.nio.ch.Net.bind0(Native Method)
-	at java.base/sun.nio.ch.Net.bind(Net.java:565)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bindInternal(DatagramChannelImpl.java:1329)
-	at java.base/sun.nio.ch.DatagramChannelImpl.bind(DatagramChannelImpl.java:1299)
-	at java.base/sun.nio.ch.DatagramSocketAdaptor.bind(DatagramSocketAdaptor.java:108)
-	at java.base/java.net.DatagramSocket.createDelegate(DatagramSocket.java:1425)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:328)
-	at java.base/java.net.DatagramSocket.&lt;init&gt;(DatagramSocket.java:387)
-	at org.york.network.TCP.connection.TCPConnection.&lt;init&gt;(TCPConnection.java:22)
-	at org.york.network.TCP.connection.TCPServerConnection.&lt;init&gt;(TCPServerConnection.java:18)
-	at org.york.network.TCP.connection.TCPConnectionTest.setUp(TCPConnectionTest.java:19)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-</failure>
-  </testcase>
+  <testcase name="testClientCreation()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.005"/>
+  <testcase name="testServerCreation()" classname="org.york.network.TCP.connection.TCPConnectionTest" time="0.007"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[Exception in thread "Thread-3" org.opentest4j.AssertionFailedError: Server error: Error de secuencias de paquete esperadas
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
 	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
-	at org.york.network.TCP.connection.TCPConnectionTest.lambda$testDataTransmission$2(TCPConnectionTest.java:94)
+	at org.york.network.TCP.connection.TCPConnectionTest.lambda$testDataTransmission$2(TCPConnectionTest.java:129)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
 ]]></system-err>
 </testsuite>
