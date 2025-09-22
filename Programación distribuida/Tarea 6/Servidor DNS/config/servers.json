@@ -1,0 +1,13 @@
+// Ejemplo de config 
+{
+  "servers": {
+    //"server1": "192.168.1.100", (yo)
+    "server2": "192.168.1.101",
+    "server3": "192.168.1.102",
+    "server4": "192.168.1.103"
+  },
+  "ports": {
+    "server-server": 8080,
+    "server-client": 8443,
+  }
+}
