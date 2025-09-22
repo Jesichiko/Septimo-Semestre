@@ -10,4 +10,4 @@ class Connection:
         self.sock.sendto(data, destino)
 
     def ReceiveFrom(self, buffer: int) -> bytes:
-        return self.sock.recv(buffer)
+        return self.sock.recvfrom(buffer)

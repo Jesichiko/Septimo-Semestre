@@ -1,5 +1,7 @@
 from typing import Optional
 
+from RequestDeliver import RequestDeliver as deliver
+
 from ..data.Message import Message
 from ..services.sync.Files import Files
 from ..services.transfer.FileTransfer import FileTransfer
@@ -27,7 +29,7 @@ class RequestProcessor:
                 "docu2.txt",
                 "docu3.txt"
             ],
-            "ip" : "192.0.128.0...:8080",
+            "ip" : "192.0.128.0...:8080" (del dueño),
         """
 
         # Verificamos si tenemos el archivo localmente
@@ -53,15 +55,49 @@ class RequestProcessor:
     def _create_not_found_response(self, files: list[str]) -> Message:
         return Message(
             type_request="respuesta",
+            target="client",
             status="NACK",
             authority="no_autoritativo",
             files=files,
             ip=self.ip,
         )
 
-    def _search_file_in_network(self, filename: str, requester_info: dict) -> Message:
+    def _search_file_in_network(self, filename: str) -> Message:
         # TO DO
-        return self._create_not_found_response(filename)
+
+        for servers in self.servers:
+            # Enviamos peticion
+            deliver.send_response(
+                Message(
+                    type_request="peticion",
+                    target="server",
+                    status="",
+                    authority="",
+                    files=filename,
+                    ip=self.ip,
+                )
+            )
+
+            # Escuchamos respuesta (TO DO)
+            response = "i dont knowwwwwwwww"
+
+            # Verificamos respuesta
+            if response["status"] == "ACK":
+                if response["authority"] == "autoritativo":
+                    pass  # recibimos la copia
+                else:  # enviamos al propio dueño la request
+                    deliver.send_response(
+                        Message(
+                            type_request="peticion",
+                            target="server",
+                            status="",
+                            authority="",
+                            files=filename,
+                            ip=response["ip"],
+                        )
+                    )
+
+        return self._create_not_found_response([filename])
 
     def _file_exists_locally(self, filename: str) -> bool:
         content = self.file_transfer.read_file_content(filename)

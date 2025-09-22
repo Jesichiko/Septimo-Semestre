@@ -23,15 +23,16 @@ class RequestHandler:
     def __init__(self, processor: RequestProcessor):
         self.processor = processor
 
-    def handle_request() -> Message:
-        # Manejamos primero la peticion, luego la enviamos
+    def handle_request(self, request: dict) -> Message:
+        if request.get("target") == "server":
+            return self._handle_server_request(request)
+        else:
+            return self._handle_client_request(request)
 
-        pass
+    def _handle_server_request(self, request: dict) -> Message:
+        filename = request["files"][0]
+        return self.processor.process_file_request(request, filename)
 
-    # Procesa peticion de otro server
-    def _handle_server_request() -> Message:
-        pass
-
-    # Procesa peticion de cliente
-    def _handle_client_request() -> Message:
-        pass
+    def _handle_client_request(self, request: dict) -> Message:
+        filename = request["files"][0]
+        return self.processor.process_file_request(request, filename)
