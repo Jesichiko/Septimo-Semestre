@@ -12,7 +12,6 @@ class RequestProcessor:
     def __init__(self, ip: str, database_dir: str, files_manager: Files):
         self.servers = []
         self.ip = ip
-        self.file_transfer = FileTransfer(database_dir)
         self.files_manager = files_manager
 
     def process_file_request(self, requester_info: dict, filename: str) -> Message:

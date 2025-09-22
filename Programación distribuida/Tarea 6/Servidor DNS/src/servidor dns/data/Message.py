@@ -29,7 +29,7 @@ class Message:
         status: str,
         authority: str,
         files: list[str],
-        ip: str
+        ip: str,
     ):
         self.type_request = type_request
         self.target = target
@@ -37,16 +37,6 @@ class Message:
         self.authority = authority
         self.files = files or []
         self.ip = ip
-
-    @property
-    def dictionary(self):
-        return {
-            "type": self.type_request,
-            "target": self.target,
-            "status": self.status,
-            "authority": self.authority,
-            "files": self.files,
-        }
 
     @property
     def json(self):

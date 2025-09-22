@@ -18,7 +18,7 @@ class Detection:
 
     def __search_servers_in_dict(self, config_file: dict) -> set(str):
         try:
-            return set(config_file.get("server").keys())
+            return set(config_file.get("servers").keys())
         except KeyError:
             raise KeyError("Error: Se eliminaron todos los servers de config")
 

@@ -2,9 +2,9 @@ import os
 
 
 class Load:
-    def __load_servers_from_dict(self, dict_config: dict) -> set(str):
+    def __load_servers_from_dict(self, dict_config: dict) -> set[str]:
         try:
-            return set(dict_config.get("server").keys())
+            return set(dict_config.get("servers").keys())
         except KeyError:
             raise KeyError("Error: No se encontraron servers en config")
 
