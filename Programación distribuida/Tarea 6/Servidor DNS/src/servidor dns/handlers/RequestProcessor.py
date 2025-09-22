@@ -8,6 +8,7 @@ from ..services.transfer.FileTransfer import FileTransfer
 class RequestProcessor:
 
     def __init__(self, ip: str, database_dir: str, files_manager: Files):
+        self.servers = []
         self.ip = ip
         self.file_transfer = FileTransfer(database_dir)
         self.files_manager = files_manager
@@ -26,7 +27,7 @@ class RequestProcessor:
                 "docu2.txt",
                 "docu3.txt"
             ],
-            "ip" : "192.0.128.0...",
+            "ip" : "192.0.128.0...:8080",
         """
 
         # Verificamos si tenemos el archivo localmente
@@ -59,10 +60,7 @@ class RequestProcessor:
         )
 
     def _search_file_in_network(self, filename: str, requester_info: dict) -> Message:
-        """Busca el archivo en otros servidores de la red"""
-        # Lógica para buscar en otros servidores
-        # Por ahora retorna NACK, pero aquí iría la lógica de red
-
+        # TO DO
         return self._create_not_found_response(filename)
 
     def _file_exists_locally(self, filename: str) -> bool:
