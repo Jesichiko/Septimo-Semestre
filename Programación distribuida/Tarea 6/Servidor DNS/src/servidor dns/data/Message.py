@@ -25,14 +25,18 @@ class Message:
     def __init__(
         self,
         type_request: str,
+        target: str,
         status: str,
         authority: str,
-        files=None,
+        files: list[str],
+        ip: str
     ):
         self.type_request = type_request
+        self.target = target
         self.status = status
         self.authority = authority
         self.files = files or []
+        self.ip = ip
 
     @property
     def dictionary(self):
@@ -41,7 +45,6 @@ class Message:
             "target": self.target,
             "status": self.status,
             "authority": self.authority,
-            "message": self.message,
             "files": self.files,
         }
 

@@ -1,3 +1,3 @@
 from .Detection import Detection
 
-__all__ = ['Detectar']
+__all__ = ['Detection']
