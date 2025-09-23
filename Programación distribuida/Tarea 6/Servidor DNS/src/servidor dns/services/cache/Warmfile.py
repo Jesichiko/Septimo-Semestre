@@ -1,16 +1,30 @@
-import load.Load as load
+import os
+
+from load.Load import Load
 
 
 class Warmfile:
-    def load_warmfile(self, name_warmfile) -> tuple[set(str), int] | None:
-        config, ttl_seconds = load.Load.load_config(name_warmfile)
-
-        if not config:  # El warmfile puede no existir, despues se crea
+    @staticmethod
+    def load_warmfile(name_warmfile: str) -> tuple[set, int] | None:
+        if not os.path.exists(name_warmfile):
             return None
 
-        return config, ttl_seconds
+        try:
+            result = Load.load_config(name_warmfile)
+            if result is None:
+                return None
 
-    def save_warmfile(self, name_warmfile, archivos: set(str), ttl: int) -> None:
-        with open(name_warmfile, "w") as warmfile:
-            for archivo in archivos:
-                warmfile.write(f"{archivo} {ttl}\n")
+            config, ttl_seconds = result
+            return config, ttl_seconds
+
+        except Exception:
+            return None
+
+    @staticmethod
+    def save_warmfile(name_warmfile: str, archivos: set, ttl: int) -> None:
+        try:
+            with open(name_warmfile, "w") as warmfile:
+                for archivo in archivos:
+                    warmfile.write(f"{archivo} {ttl}\n")
+        except Exception as e:
+            print(f"Error guardando warmfile: {e}")
