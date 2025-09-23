@@ -1,6 +1,6 @@
 import os
 
-from load.Load import Load
+from ..load.Load import Load
 
 
 class Warmfile:

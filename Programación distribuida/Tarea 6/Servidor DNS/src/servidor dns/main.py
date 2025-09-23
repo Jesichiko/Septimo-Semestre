@@ -169,19 +169,21 @@ class DNSServer:
 
 def main():
     # Configuracion del servidor
-    my_ip = "192.168.1.100"  # Cambiar por IP real
     client_port = 50000  # Puerto para clientes
     server_port = 20000  # Puerto para servidores
 
     # Argumentos: main.py <directorio_files> <servers.json> <ttl_segundos>
-    if len(sys.argv) < 4:
-        print("Uso: python main.py <directorio_files> <servers.json> <ttl_segundos>")
+    if len(sys.argv) < 5:
+        print(
+            "Uso: python main.py <directorio_files> <servers.json> <ttl_segundos> <static_ip>"
+        )
         print("Ejemplo: python main.py database/ config/servers.json 300")
         exit(-1)
 
     dir_files = sys.argv[1]
     servers_config = sys.argv[2]
     ttl_seconds = int(sys.argv[3])
+    my_ip = sys.argv[4]
 
     # Creamos y configuramos servidor
     dns_server = DNSServer(
