@@ -1,7 +1,0 @@
-.gradle/          # Cache de Gradle
-server/bin/       # Archivos compilados
-server/.classpath # Archivos específicos del IDE
-server/.project   # Archivos específicos del IDE  
-server/.settings/ # Configuración del IDE
-.project          # Archivo del proyecto Eclipse
-.settings/        # Configuración global del IDE
