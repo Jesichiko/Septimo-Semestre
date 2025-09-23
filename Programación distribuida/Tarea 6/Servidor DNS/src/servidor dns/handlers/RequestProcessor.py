@@ -1,26 +1,52 @@
-from typing import Optional
-
 from RequestDeliver import RequestDeliver as deliver
 
 from ..data.Message import Message
-from ..services.sync.Files import Files
-from ..services.transfer.FileTransfer import FileTransfer
+from ..services.transfer.FileTransfer import FileTransfer as transfer
 
 
 class RequestProcessor:
 
-    def __init__(self, ip: str, database_dir: str, files_manager: Files):
-        self.servers = []
-        self.ip = ip
-        self.files_manager = files_manager
+    def __init__(self, ip: str, server_list: set[str], file_list: set[str]) -> None:
+        self.ip: int = ip
+        self.servers: set[str] = server_list
+        self.files: set[str] = file_list
 
-    def process_file_request(self, requester_info: dict, filename: str) -> Message:
+        # Tuplas de archivo, dueño
+        self.temporary_file_list: list[tuple[str, str]]
+
+    def set_servers(self, new_servers: set[str]) -> None:
+        self.servers = new_servers.copy()
+
+    def set_files(self, new_serves: set[str]) -> None:
+        self.files = new_serves.copy
+
+    def _create_response(self, target: str, status: str, authority: str, files: list[str]) -> Message:
+        return Message(
+            type_request="respuesta",
+            target=target,
+            status=status,
+            authority=authority,
+            files=files,
+            ip=self.ip,
+        )
+
+    def process_request(self, requester_info: dict) -> Message:
+        if requester_info["type_request"]
+
+    def process_file_request(self, requester_info: dict) -> Message:
         """
         este metodo es el principal, procesamos cualquier peticion
-        que nos llegue
+        que nos llegue del tipo
 
-            "type_request": "peticion" | "respuesta",
+            "type_request": "peticion",
             "target:" "server" | "client"
+            "files": "file.txt" | "all"
+            "ip" : "192.0.128.0...:8080" (del dueño),
+
+            Si pregunta otro servidor, enviamos:
+
+            "type_request": respuesta",
+            "target:" "server"
             "status": "ACK" | "NACK",
             "authority": "autoritativo" | "no_autoritativo",
             "files": [
@@ -29,7 +55,20 @@ class RequestProcessor:
                 "docu3.txt"
             ],
             "ip" : "192.0.128.0...:8080" (del dueño),
+
+            Si es un cliente, buscamos localmente y sino esta
+            el archivo, buscamos en red
         """
+
+        file_request = requester_info["files"]
+        entity = requester_info["target"]
+
+        # Verificamos si pide mas de un archivo
+
+        # si es cliente, recolectamos los demas archivos de todos
+        if file_request == "all":
+            if
+            return self.get_all_files()
 
         # Verificamos si tenemos el archivo localmente
         if self._file_exists_locally(filename):
@@ -41,25 +80,8 @@ class RequestProcessor:
         else:
             return self._create_not_found_response([filename])
 
-    def _create_success_response(self, target: str, files: list[str]) -> Message:
-        return Message(
-            type_request="respuesta",
-            target=target,
-            status="ACK",
-            authority="autoritativo",
-            files=files,
-            ip=self.ip,
-        )
-
-    def _create_not_found_response(self, files: list[str]) -> Message:
-        return Message(
-            type_request="respuesta",
-            target="client",
-            status="NACK",
-            authority="no_autoritativo",
-            files=files,
-            ip=self.ip,
-        )
+    def get_all_files(self) -> Message:
+        for
 
     def _search_file_in_network(self, filename: str) -> Message:
         # TO DO
@@ -99,8 +121,4 @@ class RequestProcessor:
         return self._create_not_found_response([filename])
 
     def _file_exists_locally(self, filename: str) -> bool:
-        content = self.file_transfer.read_file_content(filename)
-        return content is not None
-
-    def get_file_content(self, filename: str) -> Optional[bytes]:
-        return self.file_transfer.read_file_content(filename)
+        return filename in self.files

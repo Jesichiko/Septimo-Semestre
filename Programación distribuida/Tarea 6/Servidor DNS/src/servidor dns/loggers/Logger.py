@@ -1,24 +1,77 @@
+import datetime
+import os
+from typing import List, Optional, Set
+
+
 class Logger:
 
-    # load services
-    # Log de carga de warmfile
-    def log_warmfile(self):
-        pass
+    def _create_log_directory(self, log_dir: str = "logs"):
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+            print(f"Directorio de logs creado: {self.log_dir}")
 
-    # sync services
-    # Cambios en los archivos de nuestra database
-    def log_files(self):
-        pass
+    def _write_log(self, filename: str, message: str):
+        self._create_log_directory()
 
-    # Cambios en el json de servers
-    def log_servers(self):
-        pass
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"[{timestamp}] {message}\n"
+        log_path = os.path.join(self.log_dir, filename)
 
-    # transfer services
-    # Archivos transferidos a cliente o a usuario
-    def log_transfered_files(self):
-        pass
+        try:
+            with open(log_path, "a", encoding="utf-8") as log_file:
+                log_file.write(log_entry)
+        except Exception as e:
+            print(f"Error escribiendo en log {filename}: {e}")
 
-    # request enviadas/recibidad
-    def log_requests(self):
-        pass
+    def log_warmfile(self, files: Set[str], ttl: int, action: str = "cargado"):
+        message = f"WARMFILE {action} - Archivos: {list(files)}, TTL: {ttl}s"
+        self._write_log("warmfile.log", message)
+
+    def log_files(self, files: Set[str]):
+        message = f"Archivos sincronizados - Cantidad: {
+            len(files_list)}, Archivos: {list(files)}"
+        self._write_log("files.log", message)
+
+    def log_servers(self, servers: Set[str]):
+        servers_list = list(servers) if servers else []
+        message = f"Servers encontrados - Cantidad: {
+            len(servers_list)}, Servers: {servers_list}"
+        self._write_log("servers.log", message)
+
+    def log_transferred_files(
+        self,
+        filename: str,
+        target_ip: str,
+        success: bool = True,
+    ):
+        status = "exitosa" if success else "fallida"
+        message = f"Transferencia de archivos {
+            status} - Archivo: {filename}, Target: {target_ip}"
+        self._write_log("transfers.log", message)
+
+    def log_requests(
+        self,
+        request_type: str,
+        target: str,
+        files: List[str],
+        source_ip: str,
+    ):
+        message = f"Peticion procesada - Tipo: {request_type}, Target: {
+            target}, Archivos: {files}, IP: {source_ip}"
+        self._write_log("requests.log", message)
+
+    def log_error(
+        self, error_type: str, error_message: str, context: Optional[str] = None
+    ):
+        context_info = f" - Contexto: {context}" if context else ""
+        message = f"ERROR {error_type} - {error_message}{context_info}"
+        self._write_log("errors.log", message)
+
+    def log_server_startup(self, ip: str, port: int, database: Set[str]):
+        message = f"Servidor Iniciado - IP: {ip}, Port: {
+            port}, Database: {list(database)}"
+        self._write_log("server.log", message)
+
+    def log_server_shutdown(self, files: set[str]):
+        message = f"Servidor Apagandose - Database: {list(files)}"
+        self._write_log("server.log", message)
