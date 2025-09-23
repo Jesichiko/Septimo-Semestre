@@ -6,7 +6,7 @@ from typing import Optional
 
 
 class DNSClient:
-    def __init__(self, server_ip: str = "192.168.1.100", server_port: int = 50000):
+    def __init__(self, server_ip: str = "192.168.0.29", server_port: int = 50000):
         self.server_ip = server_ip
         self.server_port = server_port
         self.timeout = 10  # segundos
@@ -231,7 +231,7 @@ Configuración:
 
 def main():
     # Configuración del cliente
-    SERVER_IP = "192.168.1.100"  # Cambia por la IP de tu servidor
+    SERVER_IP = "192.168.0.29"  # Cambia por la IP de tu servidor
     SERVER_PORT = 50000
 
     client = DNSClient(SERVER_IP, SERVER_PORT)

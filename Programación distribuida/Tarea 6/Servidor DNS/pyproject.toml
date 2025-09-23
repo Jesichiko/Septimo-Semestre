@@ -1,5 +1,5 @@
 [project]
-name = "servidor dns"
+name = "servidor-dns"
 version = "0.1.0"
 description = ""
 authors = [{ name = "jesichi/linux", email = "jesichiko@gmail.com" }]
@@ -8,7 +8,10 @@ requires-python = ">=3.13"
 dependencies = []
 
 [tool.poetry]
-packages = [{ include = "servidor dns", from = "src" }]
+packages = [{ include = "servidor-dns", from = "src" }]
+
+[tool.poetry.scripts]
+servidor-dns = "servidor-dns.main:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

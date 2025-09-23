@@ -32,7 +32,7 @@ class RequestReceiver:
 
     def _listen_loop(self):
         """Loop principal para escuchar peticiones"""
-        print(f"🔊 Servidor escuchando en {self.ip}:{self.port}")
+        print(f"Servidor escuchando en {self.ip}:{self.port}")
 
         while self.running:
             try:

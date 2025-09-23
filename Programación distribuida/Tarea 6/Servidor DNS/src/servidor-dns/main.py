@@ -79,8 +79,8 @@ class DNSServer:
             )
 
             print("Servidor inicializado")
-            print(f"rchivos: {list(self.fileHandler.get_filenames())}")
-            print(f"ervidores: {list(self.ipHandler.get_servers())}")
+            print(f"Archivos: {list(self.fileHandler.get_filenames())}")
+            print(f"Servidores: {list(self.ipHandler.get_servers())}")
 
         except Exception as e:
             self.logger.log_error("STARTUP", str(
