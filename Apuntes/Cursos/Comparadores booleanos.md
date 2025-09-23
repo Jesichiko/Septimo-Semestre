@@ -3,6 +3,8 @@ tal que podemos usar los **operandos de equidad, in-equidad, etc en ellos**.
 
 Por ejemplo, dados $\forall a,b \in\mathbb{N}:len(a) \wedge len(b) < 2 \ (base \ 2)$ podemos modelar un circuito con **funciones booleanas** (como en [[Display numérico]] o [[Sumadores booleanos]])  para usar **operandos en el conjunto de los naturales** (de 1 bit):
 
+## Comparador de 1 bit
+
 | $a$ | $b$ | $\|$ | $=$ | $\neq$ | $a>b$ | $a<b$ |
 | --- | --- | ---- | --- | ------ | ----- | ----- |
 | 0   | 0   |      | 1   | 0      | 0     | 0     |
@@ -15,6 +17,8 @@ $$f_{\ne}=\bar{a}b+a\bar{b}$$
 $$f_>=a\bar{b}$$
 $$f_<=\bar{a}b$$
 Para números naturales de 2 bits tenemos las siguientes **funciones booleanas**:
+
+## Comparador de 2  bits
 
 | $x(a_1)$ | $y(a_2)$ | $\|$ | $z(b_1)$ | $w(b_0)$ | $\|$ | $=$ | $\ne$ | $a>b$ | $a<b$ |
 | -------- | -------- | ---- | -------- | -------- | ---- | --- | ----- | ----- | ----- |

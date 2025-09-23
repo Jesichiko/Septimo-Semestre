@@ -1,7 +1,8 @@
 Los circuitos lógicos hechos hasta el momento para su entrega son los siguientes:
-1. **[[Compuertas logicas]]**: Esto es, compuertas **OR, AND y NOT**
-	- Circuito en Thinkercad y Proteus.
-	- Circuito Físico
+1. **[[Compuertas logicas]]**: 
+	- Esto es, compuertas **[[Compuertas logicas#Compuerta AND]], [[Compuertas logicas#Compuerta OR]] y [[Compuertas logicas#Compuerta NOT]]**:
+		- Circuito en Thinkercad y Proteus.
+		- Circuito Físico
 2. Alarma Vocho:
 	- Circuito en Thinkercad y Proteus
 3. **[[Semáforo Circuitos Lógicos]]**: 
@@ -10,9 +11,9 @@ Los circuitos lógicos hechos hasta el momento para su entrega son los siguiente
 	- Circuito en Thinkercad y Proteus
 5. [[Comparadores booleanos]]:
 	- Esto es:
-		- **Comparador de 2 números de 1 bit**:
+		- [[Comparadores booleanos#Comparador de 1 bit]]:
 			- Circuito en Proteus y Thinkercad
-		- **Comparador de 2 números de 2 bits**: 
+		- [[Comparadores booleanos#Comparador de 2 bits]]: 
 			- Circuito en Proteus y Thinkercad
 6. **[[Sumadores booleanos]]**:
 	- Esto es:
@@ -22,3 +23,7 @@ Los circuitos lógicos hechos hasta el momento para su entrega son los siguiente
 			- Circuito en Thinkercad y Proteus
 7. **[[Funciones Booleanas Unidad 2]]**:
 	- Circuito en Thinkercad y Proteus
+
+Ademas se tiene **modulos hechos en verilog**, los cuales son:
+1. **[[AND, OR, NOT en Verilog]]**:
+	- Modulos hechos en **Vivadoo**
