@@ -1,3 +1,3 @@
-from FileTransfer import FileTransfer
+from .FileTransfer import FileTransfer
 
 __all__ = ["FileTransfer"]

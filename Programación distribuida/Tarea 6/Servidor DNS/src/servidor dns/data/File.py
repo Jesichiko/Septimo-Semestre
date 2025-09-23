@@ -2,9 +2,9 @@ import time
 
 
 class File:
-    def __init__(self, name: str):
+    def __init__(self, name: str, ttl_seconds: int):
         self.name = name
-        self.ttl = 0
+        self.ttl = ttl_seconds
         self.timestamp = time.time()
 
     def is_expired(self) -> bool:

@@ -39,5 +39,16 @@ class Message:
         self.ip = ip
 
     @property
+    def dictionary(self):
+        return {
+            "type_request": self.type_request,
+            "target": self.target,
+            "status": self.status,
+            "authority": self.authority,
+            "files": self.files,
+            "ip": self.ip
+        }
+
+    @property
     def json(self):
         return json.dumps(self.dictionary, indent=2)
