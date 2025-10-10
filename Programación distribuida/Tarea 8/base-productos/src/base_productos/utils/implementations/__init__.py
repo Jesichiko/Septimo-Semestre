@@ -1,3 +1,3 @@
-from .xml_parsing import XML_Parser
+from .xml_parsing import XMLParser
 
-__all__ = ["XML_Parser"]
+__all__ = ["XMLParser"]

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<productos>
+    <producto id="1">
+        <nombre>LmtPmP</nombre>
+        <precio>863</precio>
+    </producto>
+    <producto id="2">
+        <nombre>rCpbFZ</nombre>
+        <precio>213</precio>
+    </producto>
+    <producto id="3">
+        <nombre>DJMHwy</nombre>
+        <precio>402</precio>
+    </producto>
+</productos>
