@@ -30,6 +30,6 @@ $$f_c=\sum(m_3+m_5+m_6+m_7)$$
 $$f_s=\sum(m_1+m_2+m_4+m_7)$$
 
 Esto es:
-$$f_c=\bar{x}yz+x\bar{y}z+xy\bar{z}+xyz = z(\bar{x}y+x\bar{y})+xy(\bar{z}+z)=z+xy$$
+$$f_c=xy+yz+xz$$
 
-$$f_s=\bar{x}\bar{y}z+\bar{x}y\bar{z}+x\bar{y}\bar{z}+xyz=\bar{x}(\bar{y}z+y\bar{z})+x(\bar{yz}+yz)$$
+$$f_s=\bar{z}(\bar{x}y+x\bar{y})+z(\bar{x}\bar{y}+xy)$$
