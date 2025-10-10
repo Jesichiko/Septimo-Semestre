@@ -1,5 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
+
 from ..interfaces import Parser
 
 
@@ -18,7 +19,15 @@ class XMLParser(Parser):
             tree.write(self.filepath, encoding="UTF-8", xml_declaration=True)
 
     def _parse(self) -> ET.ElementTree:
-        return ET.parse(self.filepath)
+        try:
+            return ET.parse(self.filepath)
+        except ET.ParseError as e:
+            print(f"[ERROR] XML mal formado: {e}")
+            print("[INFO] Regenerando archivo XML...")
+            root = ET.Element("productos")
+            tree = ET.ElementTree(root)
+            self._save(tree)
+            return tree
 
     def _save(self, tree: ET.ElementTree):
         ET.indent(tree, space="    ")
@@ -29,7 +38,14 @@ class XMLParser(Parser):
         tree = self._parse()
         root = tree.getroot()
 
-        ids = [int(p.get("id")) for p in root.findall("producto")]
+        # Obtenemos todos los IDs existentes
+        ids = []
+        for p in root.findall("producto"):
+            try:
+                ids.append(int(p.get("id")))
+            except (ValueError, TypeError):
+                pass
+
         new_id = max(ids, default=0) + 1
 
         producto = ET.SubElement(root, "producto", id=str(new_id))
@@ -49,9 +65,11 @@ class XMLParser(Parser):
         tree = self._parse()
         root = tree.getroot()
 
-        # Verificar que el ID no exista
-        if root.find(f"./producto[@id='{product_id}']") is not None:
-            raise ValueError(f"El producto con ID {product_id} ya existe")
+        # Verificamos que el ID no exista
+        existing = root.find(f"./producto[@id='{product_id}']")
+        if existing is not None:
+            print(f"-- [INSERCION] Error, el producto con ID {product_id} ya existe")
+            return -1
 
         producto = ET.SubElement(root, "producto", id=str(product_id))
         ET.SubElement(producto, "nombre").text = nombre
@@ -65,20 +83,23 @@ class XMLParser(Parser):
         )
         return product_id
 
-    # READ (nombre)
+    # READ (nombre) - busca por nombre y retorna ID
     def read(self, nombre: str) -> int:
         tree = self._parse()
         root = tree.getroot()
 
         for producto in root.findall("producto"):
             nombre_elem = producto.find("nombre")
-            if nombre_elem is not None and nombre_elem.text.lower() == nombre.lower():
+            if (
+                nombre_elem is not None
+                and nombre_elem.text
+                and nombre_elem.text.lower() == nombre.lower()
+            ):
+                product_id = int(producto.get("id"))
                 print(
-                    f"++ [CONSULTA] Producto '{nombre}' encontrado con id:{
-                        producto.get('id')
-                    }"
+                    f"++ [CONSULTA] Producto '{nombre}' encontrado con id:{product_id}"
                 )
-                return int(producto.get("id"))
+                return product_id
 
         print(f'-- [CONSULTA] No se encontro el producto "{nombre}"')
         return -1

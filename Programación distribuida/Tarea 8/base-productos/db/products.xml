@@ -1,34 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <productos>
     <producto id="1">
-        <nombre>YLXxcx</nombre>
-        <precio>940</precio>
+        <nombre>AKyXgp</nombre>
+        <precio>343</precio>
     </producto>
     <producto id="2">
-        <nombre>XYXnsM</nombre>
-        <precio>266</precio>
+        <nombre>ALoTye</nombre>
+        <precio>502</precio>
     </producto>
-    <producto id="11">
-        <nombre>iIAAIg</nombre>
-        <precio>275</precio>
-    </producto>
-    <producto id="12">
-        <nombre>QoRHGl</nombre>
-        <precio>722</precio>
-    </producto>
-    <producto id="13">
-        <nombre>zcCiDP</nombre>
-        <precio>302</precio>
-    </producto>
-    <producto id="14">
-        <nombre>lCdeKB</nombre>
-        <precio>26</precio>
-    </producto>
-    <producto id="15">
-        <nombre>OEBuHq</nombre>
-        <precio>513</precio>
-    </producto>
-    <producto id="16">
-        <nombre>FTKFmp</nombre>
-        <precio>70</precio>
-    </producto>
-<product id="1"><name>KWhzAS</name><price>911</price></product><product id="2"><name>LjfHXj</name><price>812</price></product></productos>
+</productos>

@@ -10,7 +10,6 @@ from concurrent.futures import ThreadPoolExecutor
 SERVER_URL = "http://localhost:8080"
 callback_port = 9000
 interval = float(sys.argv[1]) if len(sys.argv) > 1 else 3
-proxy = xmlrpc.client.ServerProxy(SERVER_URL, allow_none=True)
 
 
 def client_callback(producto_id):
@@ -44,8 +43,12 @@ executor = ThreadPoolExecutor(max_workers=5)
 
 def async_crear(nombre, precio):
     def task():
-        resultado = proxy.crear(f"http://localhost:{callback_port}", nombre, precio)
-        print(f"[CREAR] {nombre}, {precio} -> {resultado}")
+        try:
+            proxy = xmlrpc.client.ServerProxy(SERVER_URL, allow_none=True)
+            resultado = proxy.crear(f"http://localhost:{callback_port}", nombre, precio)
+            print(f"[CREAR] {nombre}, {precio} -> {resultado}")
+        except Exception as e:
+            print(f"[ERROR async_crear]: {e}")
 
     executor.submit(task)
 
@@ -53,6 +56,7 @@ def async_crear(nombre, precio):
 def async_insertar(producto_id, nombre, precio):
     def task():
         try:
+            proxy = xmlrpc.client.ServerProxy(SERVER_URL, allow_none=True)
             resultado = proxy.insertar(
                 f"http://localhost:{callback_port}", producto_id, nombre, precio
             )
@@ -65,8 +69,12 @@ def async_insertar(producto_id, nombre, precio):
 
 def async_consultar(nombre):
     def task():
-        resultado = proxy.consultar(f"http://localhost:{callback_port}", nombre)
-        print(f"[CONSULTAR] {nombre} -> {resultado}")
+        try:
+            proxy = xmlrpc.client.ServerProxy(SERVER_URL, allow_none=True)
+            resultado = proxy.consultar(f"http://localhost:{callback_port}", nombre)
+            print(f"[CONSULTAR] {nombre} -> {resultado}")
+        except Exception as e:
+            print(f"[ERROR async_consultar]: {e}")
 
     executor.submit(task)
 
@@ -82,11 +90,7 @@ while True:
 
         nombre_insert = random_name()
         precio_insert = random_price()
-        print(
-            f"PETICION: INSERTAR enviada -> (#{next_id},{nombre_insert},{
-                precio_insert
-            })"
-        )
+        print(f"PETICION: INSERTAR enviada -> (#{next_id},{nombre_insert},{precio_insert})")
         async_insertar(next_id, nombre_insert, precio_insert)
 
         next_id += 1
@@ -98,4 +102,5 @@ while True:
         time.sleep(interval)
     except KeyboardInterrupt:
         print("\nCliente detenido manualmente")
+        executor.shutdown(wait=True)
         break
