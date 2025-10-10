@@ -71,10 +71,8 @@ def async_consultar(nombre):
     executor.submit(task)
 
 
-# -------------------------------
 # Loop principal
-# -------------------------------
-next_id = 1
+next_id = int(sys.argv[2]) if len(sys.argv) > 2 else 10
 while True:
     try:
         nombre_crear = random_name()

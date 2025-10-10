@@ -7,11 +7,13 @@ class Database:
         self.path = os.path.join(dir, name)
         self.file_parser = file_parser or XMLParser(self.path)
 
-    def create_item(self, name: str, precio: float) -> int:
+    def create_item(self, name: str, precio: int) -> int:
         return self.file_parser.create(nombre=name, precio=precio)
 
-    def insert_item(self, id_product: int, name: str, precio: float) -> int:
-        return self.file_parser.insert(product_id=id, nombre=name, precio=precio)
+    def insert_item(self, id_product: int, name: str, precio: int) -> int:
+        return self.file_parser.insert(
+            product_id=id_product, nombre=name, precio=precio
+        )
 
     def search_item(self, name: str) -> int:
         return self.file_parser.read(nombre=name)

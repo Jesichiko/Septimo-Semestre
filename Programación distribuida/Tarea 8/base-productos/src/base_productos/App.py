@@ -56,25 +56,33 @@ def process_tasks(db: Database):
 
 
 def crear(db: Database, callback_url: str, nombre: str, precio: int) -> bool:
-    # Prioridad 0 = alta (inserciones primero)
+    # Prioridad 0 = alta (creaciones/inserciones primero)
     task_queue.put((0, ("CREAR", callback_url, (nombre, precio))))
-    print("[PETICION] CREAR recibida y encolada")
+    print(
+        f"[PETICION] CREAR recibida y encolada \n\t -> Nombre:{nombre}, Precio:{
+            precio
+        } MXN"
+    )
     return True
 
 
 def insertar(
     db: Database, callback_url: str, id_product: int, nombre: str, precio: int
 ) -> bool:
-    # Prioridad 0 = alta (inserciones primero)
+    # Prioridad 0 = alta (creaciones/inserciones primero)
     task_queue.put((0, ("INSERTAR", callback_url, (id_product, nombre, precio))))
-    print("[PETICION] INSERTAR recibida y encolada")
+    print(
+        f"[PETICION] INSERTAR recibida y encolada \n\t-> Id:#{id_product}, Nombre:{
+            nombre
+        }, Precio:{precio} MXN"
+    )
     return True
 
 
 def consultar(db: Database, callback_url: str, name: str) -> bool:
     # Prioridad 1 = baja (consultas despues de inserciones)
     task_queue.put((1, ("CONSULTAR", callback_url, (name,))))
-    print("[PETICION] CONSULTAR recibida y encolada")
+    print(f"[PETICION] CONSULTAR recibida y encolada \n\t -> Nombre:{name}")
     return True
 
 
@@ -85,7 +93,7 @@ def init_server(db: Database, ip: str, port: int):
         worker.start()
 
     server = SimpleXMLRPCServer((ip, port), allow_none=True, logRequests=False)
-    print(f"Servidor iniciado en {ip}:{port}")
+    print(f"Servidor iniciado en {ip}:{port}\n\n\n")
 
     server.register_function(lambda *args: crear(db, *args), "crear")
     server.register_function(lambda *args: insertar(db, *args), "insertar")

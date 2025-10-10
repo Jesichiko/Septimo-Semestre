@@ -25,7 +25,7 @@ class XMLParser(Parser):
         tree.write(self.filepath, encoding="UTF-8", xml_declaration=True)
 
     # CREAR (nombre, precio)
-    def create(self, nombre: str, precio: float) -> int:
+    def create(self, nombre: str, precio: int) -> int:
         tree = self._parse()
         root = tree.getroot()
 
@@ -38,14 +38,14 @@ class XMLParser(Parser):
 
         self._save(tree)
         print(
-            f'[CREACION] Se creo producto "{nombre}"\nId:{new_id}, Producto:{
+            f"++ [CREACION] Se creo producto\n\t -> Id:{new_id}, Producto:{
                 nombre
-            }, Precio:{precio}'
+            }, Precio:{precio}\n"
         )
         return new_id
 
     # INSERTAR (id, nombre, precio)
-    def insert(self, product_id: int, nombre: str, precio: float) -> int:
+    def insert(self, product_id: int, nombre: str, precio: int) -> int:
         tree = self._parse()
         root = tree.getroot()
 
@@ -59,9 +59,9 @@ class XMLParser(Parser):
 
         self._save(tree)
         print(
-            f'[INSERCION] Se inserto producto "{nombre}"\nId:{product_id}, Producto:{
+            f"++ [INSERCION] Se inserto producto\n\t -> Id:{product_id}, Producto:{
                 nombre
-            }, Precio:{precio}'
+            }, Precio:{precio}\n"
         )
         return product_id
 
@@ -74,11 +74,11 @@ class XMLParser(Parser):
             nombre_elem = producto.find("nombre")
             if nombre_elem is not None and nombre_elem.text.lower() == nombre.lower():
                 print(
-                    f"[CONSULTA] Producto '{nombre}' encontrado con id:{
+                    f"++ [CONSULTA] Producto '{nombre}' encontrado con id:{
                         producto.get('id')
                     }"
                 )
                 return int(producto.get("id"))
 
-        print(f'[CONSULTA] No se encontro el producto "{nombre}"')
+        print(f'-- [CONSULTA] No se encontro el producto "{nombre}"')
         return -1
