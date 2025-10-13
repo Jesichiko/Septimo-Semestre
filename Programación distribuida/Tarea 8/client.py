@@ -8,9 +8,9 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 
 # Uso: python client.py <server_ip> <server_port> <client_ip> <callback_port> <interval> <next_id>
-server_ip = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.100"
+server_ip = sys.argv[1] if len(sys.argv) > 1 else "127.0.0.1"
 server_port = int(sys.argv[2]) if len(sys.argv) > 2 else 8080
-client_ip = sys.argv[3] if len(sys.argv) > 3 else "192.168.1.101"
+client_ip = sys.argv[3] if len(sys.argv) > 3 else "127.0.0.1"
 callback_port = int(sys.argv[4]) if len(sys.argv) > 4 else 9000
 interval = float(sys.argv[5]) if len(sys.argv) > 5 else 3
 next_id = int(sys.argv[6]) if len(sys.argv) > 6 else 10
@@ -20,7 +20,10 @@ CALLBACK_URL = f"http://{client_ip}:{callback_port}"
 
 
 def client_callback(producto_id):
-    print(f"Callback recibido! Producto ID: {producto_id}")
+    if producto_id > 0:
+        print(f"[CALLBACK EXITOSO] Producto ID: {producto_id}")
+    elif producto_id == -1:
+        print(f"[CALLBACK ERROR] La operación fallo (ID: {producto_id})")
     return True
 
 
@@ -91,7 +94,7 @@ print("=" * 60)
 print(f"Servidor remoto: {SERVER_URL}")
 print(f"Cliente local: {CALLBACK_URL}")
 print(f"Intervalo: {interval} segundos")
-print(f"ID inicial para inserciones: {next_id}")
+print(f"ID inicial: {next_id}")
 print("=" * 60)
 print()
 
