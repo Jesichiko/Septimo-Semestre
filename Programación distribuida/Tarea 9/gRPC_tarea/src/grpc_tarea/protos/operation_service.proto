@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+service AritmeticaService {
+  rpc Operacion(OperacionRequest) returns (OperacionResponse) {}
+}
+
+message Operacion {
+  double numero = 1;
+  string operacion = 2;
+}
+
+message OperacionRequest {
+  double num1 = 1;
+  string operacion = 2;
+  double num2 = 3;
+  
+  repeated Operacion opts_operaciones = 4;
+}
+
+message OperacionResponse {
+  double result = 1;
+}
