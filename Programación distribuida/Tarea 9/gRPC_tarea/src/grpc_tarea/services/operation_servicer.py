@@ -87,7 +87,7 @@ class OperacionServicer(operation_service_pb2_grpc.AritmeticaServiceServicer):
         has_num2 = request.num2 and request.num2.strip() != ""
         has_opts = len(request.opts_operaciones) > 0
 
-        if not has_num2 and not has_opts:
+        if not has_num2:
             print(
                 f"[ERROR SERVICIO VALIDACION] Operacion incompleta: falta segundo operando para '{
                     request.operacion
@@ -95,7 +95,7 @@ class OperacionServicer(operation_service_pb2_grpc.AritmeticaServiceServicer):
             )
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details(
-                f"Operacion incompleta: se requiere num2 u operaciones adicionales para '{
+                f"Operacion incompleta: se requiere num2 para '{
                     request.operacion
                 }'"
             )

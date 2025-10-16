@@ -119,6 +119,19 @@ def run_client():
             opts_operaciones=opts,
         )
 
+        # Operacion sin num2 pero si con opts_operaciones (invalido)
+        opts = [
+            operation_service_pb2.Operacion(numero="5", operacion="+"),
+            operation_service_pb2.Operacion(numero="4", operacion="-"),
+            operation_service_pb2.Operacion(numero="3", operacion="/"),
+        ]
+        test_operation(
+            stub,
+            "Operacion sin numero 2 necesario: 10 + _ + 5 - 9 / 3",
+            num1=10.0,
+            operacion="+",
+            opts_operaciones=opts,
+        )
         print("=" * 60 + "\n")
 
 
