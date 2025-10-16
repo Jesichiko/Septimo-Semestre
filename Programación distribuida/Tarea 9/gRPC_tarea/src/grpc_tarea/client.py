@@ -105,7 +105,7 @@ def run_client():
 
         # Numero invalido (string no numerico)
         test_operation(
-            stub, "Número inválido: 'abc' + 5", num1="abc", operacion="+", num2=5.0
+            stub, "Numero invalido: 'abc' + 5", num1="abc", operacion="+", num2=5.0
         )
 
         # Operacion adicional sin numero

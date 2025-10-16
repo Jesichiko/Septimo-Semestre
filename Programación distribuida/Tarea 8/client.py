@@ -23,7 +23,7 @@ def client_callback(producto_id):
     if producto_id > 0:
         print(f"[CALLBACK EXITOSO] Producto ID: {producto_id}")
     elif producto_id == -1:
-        print(f"[CALLBACK ERROR] La operación fallo (ID: {producto_id})")
+        print(f"[CALLBACK ERROR] La operacion fallo (ID: {producto_id})")
     return True
 
 
