@@ -15,8 +15,14 @@ class ListOperationParser(Parser):
         Convierte una lista de tokens [num1, op, num2, op, num3, ...]
         a notación postfija. Si hay error de formato, devuelve None.
         """
-        if not tokens or len(tokens) < 3:
-            print("[PARSER] Error: expresión demasiado corta o vacía.")
+        if not tokens:
+            print("[PARSER] Error: expresión vacía.")
+            return None
+
+        if len(tokens) < 3:
+            print(
+                "[PARSER] Error: expresión demasiado corta. Se necesitan al menos 3 elementos (num op num)."
+            )
             return None
 
         # Validación de formato inicial (num op num op num ...)
@@ -39,7 +45,11 @@ class ListOperationParser(Parser):
                         output.append(stack.pop())
                     stack.append(token)
                 else:
-                    print(f"[PARSER] Error: token desconocido '{token}'")
+                    print(
+                        f"[PARSER] Error: token desconocido '{
+                            token
+                        }' (operador no soportado)"
+                    )
                     return None
 
             while stack:
@@ -56,16 +66,42 @@ class ListOperationParser(Parser):
         """
         Verifica que la expresión tenga alternancia correcta entre número y operador.
         Ej: [15.0, '*', 3.0] es válido, [15.0, '*'] no.
+        [15.0, '+', 3.0, '*', 2.0] es válido
         """
+        if len(tokens) % 2 == 0:
+            print(
+                f"[PARSER] Error: número incorrecto de tokens ({
+                    len(tokens)
+                }). Debe ser impar."
+            )
+            return False
+
         expect_number = True
-        for token in tokens:
+        for i, token in enumerate(tokens):
             if expect_number:
                 if not isinstance(token, (int, float)):
+                    print(
+                        f"[PARSER] Error en posición {
+                            i
+                        }: se esperaba número, se encontró '{token}' (tipo: {
+                            type(token).__name__
+                        })"
+                    )
                     return False
             else:
                 if token not in self.operators:
+                    print(
+                        f"[PARSER] Error en posición {
+                            i
+                        }: se esperaba operador (+, -, *, /), se encontró '{token}'"
+                    )
                     return False
             expect_number = not expect_number
 
-        # Si termina esperando un número, la expresión está incompleta
-        return not expect_number
+        # Si termina esperando un número (expect_number == True),
+        # significa que el último token fue un operador -> incompleto
+        if expect_number:
+            print("[PARSER] Error: expresión incompleta (termina con operador)")
+            return False
+
+        return True
