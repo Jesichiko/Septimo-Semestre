@@ -20,7 +20,9 @@ grpcio = "^1.59.0"
 grpcio-tools = "1.75.1"
 protobuf = ">=6.31.1,<7.0.0"
 
-# [tool.poetry.scripts]
+[tool.poetry.scripts]
+server = "grpc_tarea.server:main"
+client = "grpc_tarea.client:run_client"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
