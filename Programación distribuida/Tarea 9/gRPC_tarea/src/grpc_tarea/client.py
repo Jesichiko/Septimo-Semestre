@@ -1,19 +1,22 @@
 import grpc
+
 from grpc_tarea.protos import operation_service_pb2, operation_service_pb2_grpc
 
 
 def test_operation(
     stub, description, num1, operacion, num2=None, opts_operaciones=None
 ):
-    """Helper para probar operaciones"""
+    """Helper para probar operaciones - ahora convierte números a strings"""
     print(f"\n{'=' * 60}")
     print(f"TEST: {description}")
     print(f"{'=' * 60}")
 
-    # Construir request
-    kwargs = {"num1": num1, "operacion": operacion}
+    # Construimos request
+    kwargs = {"num1": str(num1), "operacion": operacion}
+
     if num2 is not None:
-        kwargs["num2"] = num2
+        kwargs["num2"] = str(num2)
+
     if opts_operaciones:
         kwargs["opts_operaciones"] = opts_operaciones
 
@@ -42,7 +45,7 @@ def run_client():
             stub, "Operacion simple valida: 15 + 5", num1=15.0, operacion="+", num2=5.0
         )
 
-        # 15 + = invalido
+        # 15 + = invalido (sin segundo operando)
         test_operation(
             stub,
             "Operacion incompleta: 15 + (sin segundo operando)",
@@ -50,15 +53,15 @@ def run_client():
             operacion="+",
         )
 
-        # 10 / 0 = operacion ilegal
+        # 10 / 0 = operacion ilegal (division por cero)
         test_operation(
-            stub, "División por cero: 10 / 0", num1=10.0, operacion="/", num2=0.0
+            stub, "Division por cero: 10 / 0", num1=10.0, operacion="/", num2=0.0
         )
 
-        # Operacion valida
+        # Operacion multiple valida
         opts = [
-            operation_service_pb2.Operacion(numero=3.0, operacion="*"),
-            operation_service_pb2.Operacion(numero=2.0, operacion="+"),
+            operation_service_pb2.Operacion(numero="3.0", operacion="*"),
+            operation_service_pb2.Operacion(numero="2.0", operacion="+"),
         ]
         test_operation(
             stub,
@@ -74,11 +77,11 @@ def run_client():
             stub, "Operador no soportado: 15 % 5", num1=15.0, operacion="%", num2=5.0
         )
 
-        # Operacion compleja que es valida
+        # Operacion compleja válida
         opts = [
-            operation_service_pb2.Operacion(numero=4.0, operacion="*"),
-            operation_service_pb2.Operacion(numero=2.0, operacion="/"),
-            operation_service_pb2.Operacion(numero=5.0, operacion="-"),
+            operation_service_pb2.Operacion(numero="4.0", operacion="*"),
+            operation_service_pb2.Operacion(numero="2.0", operacion="/"),
+            operation_service_pb2.Operacion(numero="5.0", operacion="-"),
         ]
         test_operation(
             stub,
@@ -90,7 +93,7 @@ def run_client():
         )
 
         # Division por 0 en operacion multiple
-        opts = [operation_service_pb2.Operacion(numero=0.0, operacion="/")]
+        opts = [operation_service_pb2.Operacion(numero="0.0", operacion="/")]
         test_operation(
             stub,
             "Division por cero en operacion multiple: 10 + 5 / 0",
@@ -99,6 +102,23 @@ def run_client():
             num2=5.0,
             opts_operaciones=opts,
         )
+
+        # Numero invalido (string no numerico)
+        test_operation(
+            stub, "Número inválido: 'abc' + 5", num1="abc", operacion="+", num2=5.0
+        )
+
+        # Operacion adicional sin numero
+        opts = [operation_service_pb2.Operacion(numero="", operacion="+")]
+        test_operation(
+            stub,
+            "Operacion adicional sin numero: 10 + 5 + (vacio)",
+            num1=10.0,
+            operacion="+",
+            num2=5.0,
+            opts_operaciones=opts,
+        )
+
         print("=" * 60 + "\n")
 
 

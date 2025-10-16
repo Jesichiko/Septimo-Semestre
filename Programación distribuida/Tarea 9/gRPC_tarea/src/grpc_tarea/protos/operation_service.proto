@@ -5,14 +5,14 @@ service AritmeticaService {
 }
 
 message Operacion {
-  double numero = 1;
+  string numero = 1;
   string operacion = 2;
 }
 
 message OperacionRequest {
-  double num1 = 1;
+  string num1 = 1;
   string operacion = 2;
-  double num2 = 3;
+  string num2 = 3;
   
   repeated Operacion opts_operaciones = 4;
 }

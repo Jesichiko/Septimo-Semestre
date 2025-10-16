@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x17operation_service.proto\".\n\tOperacion\x12\x0e\n\x06numero\x18\x01 \x01(\x01\x12\x11\n\toperacion\x18\x02 \x01(\t\"g\n\x10OperacionRequest\x12\x0c\n\x04num1\x18\x01 \x01(\x01\x12\x11\n\toperacion\x18\x02 \x01(\t\x12\x0c\n\x04num2\x18\x03 \x01(\x01\x12$\n\x10opts_operaciones\x18\x04 \x03(\x0b\x32\n.Operacion\"#\n\x11OperacionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x01\x32I\n\x11\x41ritmeticaService\x12\x34\n\tOperacion\x12\x11.OperacionRequest\x1a\x12.OperacionResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x17operation_service.proto\".\n\tOperacion\x12\x0e\n\x06numero\x18\x01 \x01(\t\x12\x11\n\toperacion\x18\x02 \x01(\t\"g\n\x10OperacionRequest\x12\x0c\n\x04num1\x18\x01 \x01(\t\x12\x11\n\toperacion\x18\x02 \x01(\t\x12\x0c\n\x04num2\x18\x03 \x01(\t\x12$\n\x10opts_operaciones\x18\x04 \x03(\x0b\x32\n.Operacion\"#\n\x11OperacionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x01\x32I\n\x11\x41ritmeticaService\x12\x34\n\tOperacion\x12\x11.OperacionRequest\x1a\x12.OperacionResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
