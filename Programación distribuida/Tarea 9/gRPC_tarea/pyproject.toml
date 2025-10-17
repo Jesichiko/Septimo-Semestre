@@ -22,8 +22,13 @@ protobuf = ">=6.31.1,<7.0.0"
 
 [tool.poetry.scripts]
 server = "grpc_tarea.server:main"
-client = "grpc_tarea.client:run_client"
+client = "grpc_tarea.client:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=8.4.2,<9.0.0)"
+]

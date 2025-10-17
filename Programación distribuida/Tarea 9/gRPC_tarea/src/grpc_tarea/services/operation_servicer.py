@@ -83,11 +83,8 @@ class OperacionServicer(operation_service_pb2_grpc.AritmeticaServiceServicer):
             )
             return result
 
-        # 4. Validamos que exista num2 O operaciones adicionales
-        has_num2 = request.num2 and request.num2.strip() != ""
-        has_opts = len(request.opts_operaciones) > 0
-
-        if not has_num2:
+        # 4. Validamos que num2 exista
+        if not request.num2 or request.num2.strip() == "":
             print(
                 f"[ERROR SERVICIO VALIDACION] Operacion incompleta: falta segundo operando para '{
                     request.operacion
@@ -95,32 +92,30 @@ class OperacionServicer(operation_service_pb2_grpc.AritmeticaServiceServicer):
             )
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details(
-                f"Operacion incompleta: se requiere num2 para '{
-                    request.operacion
+                f"Operacion incompleta: se requiere num2 para '{request.operacion}'"
+            )
+            return result
+
+        # 5. Validamos formato de num2 (string valido convertible a float)
+        num2_value = None
+        try:
+            num2_value = float(request.num2)
+        except ValueError:
+            print(
+                f"[ERROR SERVICIO VALIDACION] num2 '{
+                    request.num2
+                }' tiene formato invalido"
+            )
+            context.set_code(StatusCode.INVALID_ARGUMENT)
+            context.set_details(
+                f"Formato invalido: num2 debe ser un numero valido, recibido '{
+                    request.num2
                 }'"
             )
             return result
 
-        # 5. Validamos formato de num2 si existe
-        num2_value = None
-        if has_num2:
-            try:
-                num2_value = float(request.num2)
-            except ValueError:
-                print(
-                    f"[ERROR SERVICIO VALIDACION] num2 '{
-                        request.num2
-                    }' tiene formato invalido"
-                )
-                context.set_code(StatusCode.INVALID_ARGUMENT)
-                context.set_details(
-                    f"Formato invalido: num2 debe ser un numero valido, recibido '{
-                        request.num2
-                    }'"
-                )
-                return result
-
         # 6. Validamos operaciones adicionales si existen
+        has_opts = len(request.opts_operaciones) > 0
         if has_opts:
             opts_validation = self._validate_optional_operations(
                 request.opts_operaciones, context

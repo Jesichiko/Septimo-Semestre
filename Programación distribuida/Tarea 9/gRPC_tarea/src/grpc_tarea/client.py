@@ -1,139 +1,87 @@
+import argparse
 import grpc
-
+import re
 from grpc_tarea.protos import operation_service_pb2, operation_service_pb2_grpc
 
 
-def test_operation(
-    stub, description, num1, operacion, num2=None, opts_operaciones=None
-):
-    """Helper para probar operaciones - ahora convierte números a strings"""
-    print(f"\n{'=' * 60}")
-    print(f"TEST: {description}")
-    print(f"{'=' * 60}")
+def parse_expression(expr: str):
+    tokens = re.findall(r"([+-/*])|(\d+(?:\.\d+)?)", expr.replace(" ", ""))
 
-    # Construimos request
-    kwargs = {"num1": str(num1), "operacion": operacion}
+    elements = []
+    for op, num in tokens:
+        if num:
+            elements.append(num)
+        elif op:
+            elements.append(op)
 
-    if num2 is not None:
-        kwargs["num2"] = str(num2)
+    num1 = elements[0] if len(elements) > 0 else ""
+    operacion = elements[1] if len(elements) > 1 else ""
+    num2 = elements[2] if len(elements) > 2 else ""
 
-    if opts_operaciones:
-        kwargs["opts_operaciones"] = opts_operaciones
+    opts = []
+    for i in range(3, len(elements), 2):
+        if i + 1 < len(elements):
+            opts.append(
+                operation_service_pb2.Operacion(
+                    operacion=elements[i],
+                    numero=str(elements[i + 1]),
+                )
+            )
+        else:
+            opts.append(
+                operation_service_pb2.Operacion(
+                    operacion=elements[i],
+                    numero="",
+                )
+            )
 
-    request = operation_service_pb2.OperacionRequest(**kwargs)
-    print(
-        f"[REQUEST ENVIADA]: num1={num1}, op={operacion}, num2={num2}, opts={
-            opts_operaciones
-        }"
+    return str(num1), operacion, str(num2), opts
+
+
+def send_operation(stub, expr):
+    num1, op, num2, opts = parse_expression(expr)
+
+    request = operation_service_pb2.OperacionRequest(
+        num1=str(num1), operacion=op, num2=str(num2), opts_operaciones=opts
     )
-
+    print(f"[REQUEST ENVIADA]: {expr}")
     try:
-        response = stub.Operacion(request=request)
-        print(f"[EXITO REQUEST] Resultado: {response.result}")
+        response = stub.Operacion(request)
+        print(f"[RESULTADO] {response.result}\n")
     except grpc.RpcError as e:
-        print(f"[ERROR REQUEST] Codigo: {e.code().name}\nDetalles: {e.details()}")
+        print(f"[ERROR REQUEST] Codigo: {e.code().name}\nDetalles: {e.details()}\n")
 
 
-def run_client():
+def main():
+    parser = argparse.ArgumentParser(
+        description="Cliente gRPC para operaciones aritmeticas"
+    )
+    parser.add_argument(
+        "expr",
+        nargs="?",
+        help="Expresion a evaluar",
+    )
+    args = parser.parse_args()
+
     with grpc.insecure_channel("localhost:8080") as channel:
-        stub = operation_service_pb2_grpc.AritmeticaServiceStub(channel=channel)
-        print("INICIANDO PRUEBAS DEL CLIENTE gRPC")
-        print("=" * 60)
+        stub = operation_service_pb2_grpc.AritmeticaServiceStub(channel)
 
-        # 15 + 5 = 20 (valido)
-        test_operation(
-            stub, "Operacion simple valida: 15 + 5", num1=15.0, operacion="+", num2=5.0
-        )
-
-        # 15 + = invalido (sin segundo operando)
-        test_operation(
-            stub,
-            "Operacion incompleta: 15 + (sin segundo operando)",
-            num1=15.0,
-            operacion="+",
-        )
-
-        # 10 / 0 = operacion ilegal (division por cero)
-        test_operation(
-            stub, "Division por cero: 10 / 0", num1=10.0, operacion="/", num2=0.0
-        )
-
-        # Operacion multiple valida
-        opts = [
-            operation_service_pb2.Operacion(numero="3.0", operacion="*"),
-            operation_service_pb2.Operacion(numero="2.0", operacion="+"),
-        ]
-        test_operation(
-            stub,
-            "Operacion multiple: 15 + 5 * 3 + 2 = 32",
-            num1=15.0,
-            operacion="+",
-            num2=5.0,
-            opts_operaciones=opts,
-        )
-
-        # Operador no soportado
-        test_operation(
-            stub, "Operador no soportado: 15 % 5", num1=15.0, operacion="%", num2=5.0
-        )
-
-        # Operacion compleja válida
-        opts = [
-            operation_service_pb2.Operacion(numero="4.0", operacion="*"),
-            operation_service_pb2.Operacion(numero="2.0", operacion="/"),
-            operation_service_pb2.Operacion(numero="5.0", operacion="-"),
-        ]
-        test_operation(
-            stub,
-            "Operacion compleja: 10 + 6 * 4 / 2 - 5 = 17",
-            num1=10.0,
-            operacion="+",
-            num2=6.0,
-            opts_operaciones=opts,
-        )
-
-        # Division por 0 en operacion multiple
-        opts = [operation_service_pb2.Operacion(numero="0.0", operacion="/")]
-        test_operation(
-            stub,
-            "Division por cero en operacion multiple: 10 + 5 / 0",
-            num1=10.0,
-            operacion="+",
-            num2=5.0,
-            opts_operaciones=opts,
-        )
-
-        # Numero invalido (string no numerico)
-        test_operation(
-            stub, "Numero invalido: 'abc' + 5", num1="abc", operacion="+", num2=5.0
-        )
-
-        # Operacion adicional sin numero
-        opts = [operation_service_pb2.Operacion(numero="", operacion="+")]
-        test_operation(
-            stub,
-            "Operacion adicional sin numero: 10 + 5 + (vacio)",
-            num1=10.0,
-            operacion="+",
-            num2=5.0,
-            opts_operaciones=opts,
-        )
-
-        # Operacion sin num2 pero si con opts_operaciones (invalido)
-        opts = [
-            operation_service_pb2.Operacion(numero="5", operacion="+"),
-            operation_service_pb2.Operacion(numero="4", operacion="-"),
-            operation_service_pb2.Operacion(numero="3", operacion="/"),
-        ]
-        test_operation(
-            stub,
-            "Operacion sin numero 2 necesario: 10 + _ + 5 - 9 / 3",
-            num1=10.0,
-            operacion="+",
-            opts_operaciones=opts,
-        )
-        print("=" * 60 + "\n")
+        if args.expr:
+            send_operation(stub, args.expr)
+        else:
+            print("Sin expresion, ejecutando pruebas automaticas...\n")
+            pruebas = [
+                "15 + 5",
+                "10 / 0",
+                "10 + 5 * 3 + 2",
+                "10 + 6 * 4 / 2 - 5",
+                "15 % 5",
+                "abc + 5",
+                "10 + 10 +",
+            ]
+            for p in pruebas:
+                send_operation(stub, p)
 
 
 if __name__ == "__main__":
-    run_client()
+    main()
