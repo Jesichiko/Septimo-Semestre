@@ -1,0 +1,25 @@
+[project]
+name = "grpc_services"
+version = "0.1.0"
+description = ""
+authors = [{ name = "jesichi/linux", email = "jesichiko@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.13"
+
+[tool.poetry]
+packages = [{ include = "modelo productor _ consumidor", from = "src" }]
+
+
+[tool.poetry.dependencies]
+python = "^3.13"
+grpcio = "^1.59.0"
+grpcio-tools = "1.75.1"
+protobuf = ">=6.31.1,<7.0.0"
+
+[tool.poetry.scripts]
+server = "grpc_tarea.server:main"
+client = "grpc_tarea.client:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
