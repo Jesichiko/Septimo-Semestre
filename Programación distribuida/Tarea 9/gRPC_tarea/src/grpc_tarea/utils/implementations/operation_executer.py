@@ -13,10 +13,12 @@ class PostfixOperationExecuter(ExecuteOperation):
         print(f"[EXECUTOR] Evaluando postfija: {operations}")
         try:
             for token in operations:
+                # si es un numero (int o float) se añade al stack
                 if isinstance(token, (int, float)):
                     stack.append(float(token))
                     print(f"  Push {token} -> Stack: {stack}")
 
+                # Si es un operador se intenta sacar dos operandos
                 elif token in cls._OPERATORS:
                     if len(stack) < 2:
                         print(
@@ -26,21 +28,24 @@ class PostfixOperationExecuter(ExecuteOperation):
                         )
                         return None
 
+                    # operandos sacados
                     right = stack.pop()
                     left = stack.pop()
 
+                    # se aplica la operacion (si hay error se retorna None)
                     result = cls._apply_operator(left, token, right)
                     if result is None:
                         return None
 
+                    # se apila el resultado de la operacion
                     stack.append(result)
                     print(f"  Op {left} {token} {right} = {result} -> Stack: {stack}")
 
-                else:
+                else:  # si es un simbolo no valido
                     print(f"[EXECUTOR] Error: token invalido '{token}'")
                     return None
 
-            if len(stack) != 1:
+            if len(stack) != 1:  # el stack final debe tener solo un valor
                 print(f"[EXECUTOR] Error: stack final invalido {stack}")
                 return None
 
@@ -62,6 +67,7 @@ class PostfixOperationExecuter(ExecuteOperation):
         "**": operator.pow,
     }
 
+    # funciones aritmeticas a aplicar
     @classmethod
     def _apply_operator(cls, left, operator_symbol, right):
         try:

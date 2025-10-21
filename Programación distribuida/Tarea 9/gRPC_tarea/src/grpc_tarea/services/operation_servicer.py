@@ -193,11 +193,8 @@ class OperacionServicer(operation_service_pb2_grpc.AritmeticaServiceServicer):
         operation_list = [
             validated_data["num1"],
             validated_data["operacion"],
+            validated_data["num2"],
         ]
-
-        # Agregamos num2 si existe
-        if validated_data["num2"] is not None:
-            operation_list.append(validated_data["num2"])
 
         # Agregamos operaciones adicionales si existen
         if "opts" in validated_data:
