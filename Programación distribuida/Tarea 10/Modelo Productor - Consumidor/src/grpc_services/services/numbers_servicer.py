@@ -8,7 +8,6 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
     def __init__(self, number_generator: Generate_Numbers, user_stats: UserStats):
         self.generator = number_generator
         self.stats = user_stats
-        pass
 
     def getNumbers(self, request, context):
         print("[SERVER: SERVICIO NUMBERS] Verificando peticion recibida de numeros...")
