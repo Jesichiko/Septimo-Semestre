@@ -45,6 +45,7 @@ def serve(host: str, port: str, workers: int):
 
 
 def main():
+    # Argumentos: python <ip_server> <port_server> <workers>
     try:
         host = sys.argv[1] if len(sys.argv) > 1 else "0.0.0.0"
         port = int(sys.argv[2]) if len(sys.argv) > 2 else 8080

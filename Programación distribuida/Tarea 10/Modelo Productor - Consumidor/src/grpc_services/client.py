@@ -8,7 +8,7 @@ from grpc_services.protos import numbers_service_pb2, numbers_service_pb2_grpc
 def execute_operation(numbers: list[float]) -> float:
     result = 0.0
     for number in numbers:
-        result += number  # CORREGIDO: antes sumaba result + result
+        result += number
     return result
 
 
@@ -22,7 +22,7 @@ def send_request_numbers(server_address: str) -> list[float]:
         print(f"[CLIENTE: ERROR] Error al solicitar numeros: {e.code()}: {e.details()}")
         raise
     except Exception as e:
-        print(f"[CLIENTE: ERROR] Error inesperado: {e}")
+        print(f"[CLIENTE: ERROR] {e}")
         raise
 
 
@@ -44,7 +44,7 @@ def send_result(server_address: str, client_addr: str, result: float) -> bool:
 
 
 def main():
-    # Uso: python client.py <server_ip> <server_port> <client_ip> <client_port>
+    # Argumentos: python client.py <server_ip> <server_port> <client_ip> <client_port>
     server_ip = sys.argv[1] if len(sys.argv) > 1 else "0.0.0.0"
     server_port = int(sys.argv[2]) if len(sys.argv) > 2 else 8080
     client_ip = sys.argv[3] if len(sys.argv) > 3 else "0.0.0.0"
@@ -56,7 +56,7 @@ def main():
     print(f"[CLIENTE: INICIO] {client_addr} conectando a servidor {server_address}")
     try:
         numbers = send_request_numbers(server_address)
-        print(f"[CLIENTE: REQUEST] Números recibidos: {numbers}, procesando...")
+        print(f"[CLIENTE: REQUEST] Numeros recibidos: {numbers}, procesando...")
 
         result = execute_operation(numbers=numbers)
         print(f"[CLIENTE: RESULT] Resultado calculado: {result}")
