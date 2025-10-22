@@ -8,7 +8,6 @@ import random
 class Generate_Numbers:
     def __init__(self):
         self.generated_triplets = set()
-        self.max_attempts = 10000
 
     def getNumbers(self) -> list[float]:
         attempts = 0
@@ -22,9 +21,8 @@ class Generate_Numbers:
             if triplet not in self.generated_triplets:
                 self.generated_triplets.add(triplet)
                 return [float(num1), float(num2), float(num3)]
-            attempts += 1
 
-            if attempts == self.max_attempts:
+            if len(self.generated_triplets) == 1000000000:
                 raise Exception(
                     "Error: Ya no se pueden crear numeros ya que se terminaron las combinaciones"
                 )
