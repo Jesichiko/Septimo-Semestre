@@ -11,12 +11,12 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
         pass
 
     def getNumbers(self, request, context):
-        print("[SERVER: SERVICIO NUMBERS] Peticion recibida de pedido de numeros")
+        print("[SERVER: SERVICIO NUMBERS] Verificando peticion recibida de numeros...")
         try:
             numbers = self.generator.getNumbers()
-            print("[SERVICIO NUMBERS: EXITO] Vector de numeros creados con exito")
+            print("[SERVICIO NUMBERS: EXITO] Vector de numeros creados con exito\n")
         except Exception as e:
-            print("[SERVICIO NUMBERS: ERROR] Error al crear vector de numeros")
+            print("[SERVICIO NUMBERS: ERROR] Error al crear vector de numeros\n")
             context.set_code(StatusCode.ABORTED)
             context.set_details(f"Error al crear vector de numeros: {e}")
             return numbers_service_pb2.NumbersResponse()
@@ -26,24 +26,27 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
         )
 
     def receiveResult(self, request, context):
+        print("[SERVER: RESULTADO RECIBIDO] Verificando mensaje recibido...")
+
         if not request.user_addr or request.user_addr.strip() == "":
-            print("[ERROR RECEIVE RESULT] Direccion de usuario invalida")
+            print("[RECEIVE RESULT: ERROR] Direccion de usuario invalida\n")
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details("Campo IP invalido en mensaje")
             return numbers_service_pb2.ResultResponse(response=False)
 
         if not request.result:
-            print("[ERROR RECEIVE RESULT] Resultado no proporcionado")
+            print("[RECEIVE RESULT: ERROR] Resultado no proporcionado\n")
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details("Resultado no proporcionado en mensaje")
             return numbers_service_pb2.ResultResponse(response=False)
 
-        print(
-            f"[SERVER: RECEIVE RESULT] Resultado {request.result} recibido de {
-                request.user_addr
-            }"
-        )
-
         self.stats.addResult(request.user_addr, request.result)
-        print("[SERVER: RESULTADO REGISTRADO] Resultado almacenado exitosamente")
+        print("[SERVER: RESULTADO REGISTRADO] Resultado almacenado exitosamente\n")
+
+        # mostramos stats actuales de todos los usuarios que dieron resultado
+        print("[ESTADISTICAS USUARIOS]")
+        print("-" * 60)
+        self.stats.print_statistics()
+        print("\n")
+
         return numbers_service_pb2.ResultResponse(response=True)
