@@ -46,8 +46,8 @@ def send_result(server_address: str, client_addr: str, result: float) -> bool:
 def main():
     # Argumentos: python client.py <server_ip> <server_port> <client_ip> <client_port>
     server_ip = sys.argv[1] if len(sys.argv) > 1 else "0.0.0.0"
-    client_ip = sys.argv[3] if len(sys.argv) > 3 else "0.0.0.0"
-    port = int(sys.argv[4]) if len(sys.argv) > 4 else 8080
+    client_ip = sys.argv[2] if len(sys.argv) > 3 else "0.0.0.0"
+    port = int(sys.argv[3]) if len(sys.argv) > 4 else 8080
 
     server_address = f"{server_ip}:{port}"
     client_addr = f"{client_ip}:{port}"
