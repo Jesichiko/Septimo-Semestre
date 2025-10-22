@@ -18,17 +18,14 @@ def serve(host: str, port: str, workers: int):
     # añadimos el servicio a publicar, que es NumbersServicer
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=workers))
     numbers_service_pb2_grpc.add_NumbersServiceServicer_to_server(
-        NumbersServicer(number_generator=number_generator, user_stats=user_stats), server
+        NumbersServicer(number_generator=number_generator, user_stats=user_stats),
+        server,
     )
 
     # iniciamos server
     server_address = f"{host}:{port}"
     server.add_insecure_port(server_address)
     server.start()
-
-    print(f"[SERVER: INICIO] Servidor escuchando en {server_address}...")
-    print("[SERVER: LISTO] Esperando peticiones de clientes...")
-    print("Presiona Ctrl+C para ver estadísticas y detener el servidor\n")
 
     print("Servidor gRPC de producto-consumidor iniciado")
     print("=" * 60)
