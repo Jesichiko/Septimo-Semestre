@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+service NumbersService {
+  rpc getNumbers(google.protobuf.Empty) returns (NumbersResponse) {}
+  rpc receiveResult(ResultRequest) returns (ResultResponse) {}
+}
+
+message NumbersResponse {
+  double num1 = 1;
+  double num2 = 2;
+  double num3 = 3;
+  
+}
+
+message ResultRequest {
+  string user_addr = 1;
+  double result = 2;
+}
+
+message ResultResponse { bool response = 1; }
