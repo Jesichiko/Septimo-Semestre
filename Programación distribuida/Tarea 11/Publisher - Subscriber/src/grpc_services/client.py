@@ -1,5 +1,6 @@
 import sys
 import grpc
+import random
 from google.protobuf import empty_pb2
 
 from grpc_services.protos import numbers_service_pb2, numbers_service_pb2_grpc
@@ -16,7 +17,11 @@ def send_request_numbers(server_address: str) -> tuple(list[int], list[str]):
     try:
         with grpc.insecure_channel(server_address) as channel:
             stub = numbers_service_pb2_grpc.NumbersServiceStub(channel)
-            response = stub.getNumbers(empty_pb2.Empty())
+            response = stub.getNumbers(
+                numbers_service_pb2.NumbersRequest(
+                    num_queues=1 if random.random <= 0.50 else 2
+                )
+            )
             return (
                 [response.num1, response.num2, response.num3],
                 list(response.publishers),

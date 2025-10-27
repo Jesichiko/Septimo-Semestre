@@ -3,8 +3,12 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 
 service NumbersService {
-  rpc getNumbers(google.protobuf.Empty) returns (NumbersResponse) {}
+  rpc getNumbers(NumbersRequest) returns (NumbersResponse) {}
   rpc receiveResult(ResultRequest) returns (ResultResponse) {}
+}
+
+message NumbersRequest{
+  num_queues = 1;
 }
 
 message NumbersResponse {

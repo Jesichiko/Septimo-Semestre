@@ -11,6 +11,14 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
 
     def getNumbers(self, request, context):
         print("[SERVER: REQUESTED NUMBERS] Peticion recibida de pedido de numeros...")
+        if not request.num_queues:
+            print(
+                "[REQUESTED NUMBERS: ERROR] No se recibio numero de queues para tomar numeros\n"
+            )
+            context.set_code(StatusCode.INVALID_ARGUMENT)
+            context.set_details("No se recibio numero de queues para tomar numeros")
+            return numbers_service_pb2.NumbersResponse()
+
         try:
             numbers, publishers = self.generator.getNumbers()
             print("[REQUESTED NUMBERS: EXITO] Vector de numeros creados con exito\n")
