@@ -10,13 +10,14 @@ class UserStats:
     def __init__(self):
         self.user_participations = defaultdict(int)
         self.user_results = defaultdict(list)
-        self.suscribed = defaultdict(list)
+        self.suscribed = defaultdict(set)
         self.total_sum = 0.0
 
     def addResult(self, user_addr: str, result: float, subscribed: list[str]):
         self.user_participations[user_addr] += 1
         self.user_results[user_addr].append(result)
-        self.suscribed[user_addr].append(subscribed)
+        for publisher in subscribed:
+            self.suscribed[user_addr].add(publisher)
         self.total_sum += result
 
     def print_statistics(self):

@@ -22,10 +22,7 @@ def send_request_numbers(server_address: str) -> tuple[list[int], list[str]]:
                     num_queues=1 if random.random() <= 0.50 else 2
                 )
             )
-            return (
-                [response.num1, response.num2, response.num3],
-                list(response.publishers),
-            )
+            return (list(response.numbers), list(response.publishers))
     except grpc.RpcError as e:
         print(
             f"[REQUESTED NUMBERS: ERROR] Error al solicitar numeros: {e.code()}: {
