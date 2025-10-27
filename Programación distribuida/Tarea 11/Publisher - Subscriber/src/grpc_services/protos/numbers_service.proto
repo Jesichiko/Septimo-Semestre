@@ -11,12 +11,15 @@ message NumbersResponse {
   double num1 = 1;
   double num2 = 2;
   double num3 = 3;
-  
+  repeated string publishers = 4;
 }
 
 message ResultRequest {
   string user_addr = 1;
   double result = 2;
+  repeated string subscribed = 3;
 }
 
-message ResultResponse { bool response = 1; }
+message ResultResponse {
+  bool response = 1;
+}

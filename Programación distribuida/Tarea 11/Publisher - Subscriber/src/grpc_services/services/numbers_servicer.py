@@ -10,33 +10,39 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
         self.stats = user_stats
 
     def getNumbers(self, request, context):
-        print("[SERVER: SERVICIO NUMBERS] Verificando peticion recibida de numeros...")
+        print("[SERVER: REQUESTED NUMBERS] Peticion recibida de pedido de numeros...")
         try:
-            numbers = self.generator.getNumbers()
-            print("[SERVICIO NUMBERS: EXITO] Vector de numeros creados con exito\n")
+            numbers, publishers = self.generator.getNumbers()
+            print("[REQUESTED NUMBERS: EXITO] Vector de numeros creados con exito\n")
         except Exception as e:
-            print("[SERVICIO NUMBERS: ERROR] Error al crear vector de numeros\n")
+            print("[REQUESTED NUMBERS: ERROR] Error al crear vector de numeros\n")
             context.set_code(StatusCode.ABORTED)
             context.set_details(f"Error al crear vector de numeros: {e}")
             return numbers_service_pb2.NumbersResponse()
 
         return numbers_service_pb2.NumbersResponse(
-            num1=numbers[0], num2=numbers[1], num3=numbers[2]
+            num1=numbers[0], num2=numbers[1], num3=numbers[2], suscribed=publishers
         )
 
     def receiveResult(self, request, context):
-        print("[SERVER: RESULTADO RECIBIDO] Verificando mensaje recibido...")
+        print("[SERVER: RECEIVED RESULT] Verificando mensaje recibido...")
 
         if not request.user_addr or request.user_addr.strip() == "":
-            print("[RECEIVE RESULT: ERROR] Direccion de usuario invalida\n")
+            print("[RESULT RECEIVED: ERROR] Direccion de usuario invalida\n")
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details("Campo IP invalido en mensaje")
             return numbers_service_pb2.ResultResponse(response=False)
 
         if not request.result:
-            print("[RECEIVE RESULT: ERROR] Resultado no proporcionado\n")
+            print("[RESULT RECEIVED: ERROR] Resultado no proporcionado\n")
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details("Resultado no proporcionado en mensaje")
+            return numbers_service_pb2.ResultResponse(response=False)
+
+        if not len(request.suscribed) > 0:
+            print("[RESULT RECEIVED: ERROR] Publishers suscritos no proporcionados\n")
+            context.set_code(StatusCode.INVALID_ARGUMENT)
+            context.set_details("Publishers suscritos no proporcionados")
             return numbers_service_pb2.ResultResponse(response=False)
 
         self.stats.addResult(request.user_addr, request.result)

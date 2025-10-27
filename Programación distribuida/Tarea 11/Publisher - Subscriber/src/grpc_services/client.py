@@ -12,34 +12,45 @@ def execute_operation(numbers: list[float]) -> float:
     return result
 
 
-def send_request_numbers(server_address: str) -> list[float]:
+def send_request_numbers(server_address: str) -> tuple(list[int], list[str]):
     try:
         with grpc.insecure_channel(server_address) as channel:
             stub = numbers_service_pb2_grpc.NumbersServiceStub(channel)
             response = stub.getNumbers(empty_pb2.Empty())
-            return [response.num1, response.num2, response.num3]
+            return (
+                [response.num1, response.num2, response.num3],
+                list(response.publishers),
+            )
     except grpc.RpcError as e:
-        print(f"[CLIENTE: ERROR] Error al solicitar numeros: {e.code()}: {e.details()}")
+        print(
+            f"[REQUESTED NUMBERS: ERROR] Error al solicitar numeros: {e.code()}: {
+                e.details()
+            }"
+        )
         raise
     except Exception as e:
-        print(f"[CLIENTE: ERROR] {e}")
+        print(f"[REQUESTED NUMBERS: ERROR] {e}")
         raise
 
 
-def send_result(server_address: str, client_addr: str, result: float) -> bool:
+def send_result(
+    server_address: str, client_addr: str, result: float, publishers: list[str]
+) -> bool:
     try:
         with grpc.insecure_channel(server_address) as channel:
             stub = numbers_service_pb2_grpc.NumbersServiceStub(channel)
             request = numbers_service_pb2.ResultRequest(
-                user_addr=client_addr, result=result
+                user_addr=client_addr, result=result, subscribed=publishers
             )
             response = stub.receiveResult(request)
             return response.response
     except grpc.RpcError as e:
-        print(f"[CLIENTE: ERROR] Error al enviar resultado: {e.code()}: {e.details()}")
+        print(
+            f"[SEND RESULT: ERROR] Error al enviar resultado: {e.code()}: {e.details()}"
+        )
         return False
     except Exception as e:
-        print(f"[CLIENTE: ERROR] Error inesperado: {e}")
+        print(f"[SEND RESULT: ERROR] Error inesperado: {e}")
         return False
 
 
@@ -51,17 +62,21 @@ def main():
 
     server_address = f"{server_ip}:{port}"
     client_addr = f"{client_ip}:{port}"
-
     print(f"[CLIENTE: INICIO] {client_addr} conectando a servidor {server_address}")
     try:
-        numbers = send_request_numbers(server_address)
+        numbers, publishers = send_request_numbers(server_address=server_address)
         print(f"[CLIENTE: REQUEST] Numeros recibidos: {numbers}, procesando...")
 
         result = execute_operation(numbers=numbers)
         print(f"[CLIENTE: RESULT] Resultado calculado: {result}")
 
         print("[CLIENTE: ENVIANDO RESULT] Enviando resultado al servidor...")
-        success = send_result(server_address, client_addr, result)
+        success = send_result(
+            server_address=server_address,
+            client_addr=client_addr,
+            result=result,
+            publishers=publishers,
+        )
 
         if success:
             print("[CLIENTE: EXITO] Resultado enviado correctamente, terminando...")

@@ -10,11 +10,13 @@ class UserStats:
     def __init__(self):
         self.user_participations = defaultdict(int)
         self.user_results = defaultdict(list)
+        self.suscribed = defaultdict(list)
         self.total_sum = 0.0
 
-    def addResult(self, user_addr: str, result: float):
+    def addResult(self, user_addr: str, result: float, subscribed: list[str]):
         self.user_participations[user_addr] += 1
         self.user_results[user_addr].append(result)
+        self.suscribed[user_addr].append(subscribed)
         self.total_sum += result
 
     def print_statistics(self):
@@ -34,11 +36,10 @@ class UserStats:
 
         for user_addr, count in sorted_users:
             results = self.user_results[user_addr]
-            avg = sum(results) / len(results) if results else 0
             print(f"Usuario: {user_addr}")
             print(f"  - Participaciones: {count}")
             print(f"  - Suma de resultados: {sum(results):.2f}")
-            print(f"  - Promedio: {avg:.2f}")
+            print(f"  - Suscrito a: {self.suscribed[user_addr]}")
             print()
 
         print("=" * 60 + "\n")

@@ -50,7 +50,7 @@ class Generate_Numbers:
             )
         self.criteria = criteria
 
-    def getNumbers(self) -> list[float]:
+    def getNumbers(self) -> tuple(list[int], list[str]):
         with self.lock:
             if self.count >= self.max_results:
                 raise MemoryError(
