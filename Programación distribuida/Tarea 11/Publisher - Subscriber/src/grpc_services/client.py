@@ -19,7 +19,7 @@ def send_request_numbers(server_address: str) -> tuple(list[int], list[str]):
             stub = numbers_service_pb2_grpc.NumbersServiceStub(channel)
             response = stub.getNumbers(
                 numbers_service_pb2.NumbersRequest(
-                    num_queues=1 if random.random <= 0.50 else 2
+                    num_queues=1 if random.random() <= 0.50 else 2
                 )
             )
             return (

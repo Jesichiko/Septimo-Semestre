@@ -20,25 +20,25 @@ class Generate_Numbers:
         # Diccionario de criterios
         self._CRITERIA = {
             "aleatorio": lambda nums: (
-                self.principal_queue.put(nums)  # 33%
+                (self.principal_queue, "principal")
                 if (r := random.random()) < 0.33
-                else self.second_queue.put(nums)  # 66%
+                else (self.second_queue, "secundaria")
                 if r < 0.66
-                else self.third_queue.put(nums)  # 99%
+                else (self.third_queue, "terciaria")
             ),
             "ponderado": lambda nums: (
-                self.principal_queue.put(nums)  # 50%
+                (self.principal_queue, "principal")
                 if (r := random.random()) < 0.50
-                else self.second_queue.put(nums)  # 30%
+                else (self.second_queue, "secundaria")
                 if r < 0.80
-                else self.third_queue.put(nums)  # 20%
+                else (self.third_queue, "terciaria")
             ),
             "condicional": lambda nums: (
-                self.principal_queue.put(nums)  # 2 pares
+                (self.principal_queue, "principal")
                 if (even_count := sum(1 for n in nums if int(n) % 2 == 0)) == 2
-                else self.second_queue.put(nums)  # 2 impares
+                else (self.second_queue, "secundaria")
                 if even_count == 1
-                else self.third_queue.put(nums)  # 0 o 3 pares
+                else (self.third_queue, "terciaria")
             ),
         }
 
@@ -50,31 +50,61 @@ class Generate_Numbers:
             )
         self.criteria = criteria
 
-    def getNumbers(self) -> tuple(list[int], list[str]):
+    def _generate_unique_triplet(
+        self, available_queues: list[str]
+    ) -> tuple[list[int], str]:
+        attempts = 0
+        while attempts < self.max_attempts:
+            num1 = random.randint(1, 1000)
+            num2 = random.randint(1, 1000)
+            num3 = random.randint(1, 1000)
+            triplet_tuple = (num1, num2, num3)
+
+            if triplet_tuple in self.seen:
+                attempts += 1
+                continue
+
+            # Aplicamos criterio para determinar la cola
+            triplet_list = [int(num1), int(num2), int(num3)]
+            target_queue, queue_name = self._CRITERIA[self.criteria](triplet_list)
+
+            if queue_name not in available_queues:
+                attempts += 1
+                continue  # no agregamos el conjunto creado ya que la cola no esta disponible
+
+            self.seen.add(triplet_tuple)
+            target_queue.put(triplet_list)
+            self.count += 1
+            return triplet_list, queue_name
+
+        raise Exception("No se pudo generar tercia unica despues de multiples intentos")
+
+    def getNumbers(self, num_queues: int) -> tuple[list[int], list[str]]:
         with self.lock:
+            available_queues = ["principal", "secundaria", "terciaria"]
+
             if self.count >= self.max_results:
                 raise MemoryError(
                     "[GENERADOR NUMS: LIMITE ALCANZADO] ya se generaron todas las tercias posibles"
                 )
+            if num_queues not in [1, 2]:
+                raise ValueError(f"num_queues debe ser 1 o 2, se recibio: {num_queues}")
 
-            attempts = 0
-            while attempts < self.max_attempts:
-                num1 = random.randint(1, 1000)
-                num2 = random.randint(1, 1000)
-                num3 = random.randint(1, 1000)
-                triplet_tuple = (num1, num2, num3)
-
-                if triplet_tuple not in self.seen:
-                    self.seen.add(triplet_tuple)
-                    triplet_list = [num1, num2, num3]
-
-                    # Aplicamos criterio
-                    self._CRITERIA[self.criteria](triplet_list)
-
-                    self.count += 1
-                    return triplet_list
-                attempts += 1
-
-            raise Exception(
-                "No se pudo generar tercia unica despues de multiples intentos"
+            # generamos primer conjunto de numeros
+            # (siempre se generara al menos uno)
+            first_triplet, first_queue = self._generate_unique_triplet(
+                available_queues=available_queues
             )
+
+            # Si solo pidio 1 cola retornamos ese conjunto
+            if num_queues == 1:
+                return first_triplet, [first_queue]
+
+            # Si pidieron 2 colas generamos segundo conjunto de una cola diferente
+            available_queues.remove(first_queue)
+            second_triplet, second_queue = self._generate_unique_triplet(
+                available_queues=available_queues
+            )
+
+            # retornamos la combinacion de conjuntos y el nombre de colas
+            return first_triplet + second_triplet, [first_queue, second_queue]

@@ -8,7 +8,7 @@ service NumbersService {
 }
 
 message NumbersRequest{
-  num_queues = 1;
+  int num_queues = 1;
 }
 
 message NumbersResponse {

@@ -21,7 +21,9 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
 
         try:
             numbers, publishers = self.generator.getNumbers()
-            print("[REQUESTED NUMBERS: EXITO] Vector de numeros creados con exito\n")
+            print("[REQUESTED NUMBERS: EXITO] Vector de numeros creados con exito:")
+            print(f"Numeros: {numbers}")
+            print(f"Publishers:{publishers}\n")
         except Exception as e:
             print("[REQUESTED NUMBERS: ERROR] Error al crear vector de numeros\n")
             context.set_code(StatusCode.ABORTED)
@@ -29,7 +31,7 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
             return numbers_service_pb2.NumbersResponse()
 
         return numbers_service_pb2.NumbersResponse(
-            num1=numbers[0], num2=numbers[1], num3=numbers[2], suscribed=publishers
+            num1=numbers[0], num2=numbers[1], num3=numbers[2], publishers=publishers
         )
 
     def receiveResult(self, request, context):
@@ -47,13 +49,13 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
             context.set_details("Resultado no proporcionado en mensaje")
             return numbers_service_pb2.ResultResponse(response=False)
 
-        if not len(request.suscribed) > 0:
+        if not len(request.subscribed) > 0:
             print("[RESULT RECEIVED: ERROR] Publishers suscritos no proporcionados\n")
             context.set_code(StatusCode.INVALID_ARGUMENT)
             context.set_details("Publishers suscritos no proporcionados")
             return numbers_service_pb2.ResultResponse(response=False)
 
-        self.stats.addResult(request.user_addr, request.result)
+        self.stats.addResult(request.user_addr, request.result, request.subscribed)
         print("[SERVER: RESULTADO REGISTRADO] Resultado almacenado exitosamente\n")
 
         # mostramos stats actuales de todos los usuarios que dieron resultado
