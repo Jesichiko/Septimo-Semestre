@@ -20,7 +20,7 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
             return numbers_service_pb2.NumbersResponse()
 
         try:
-            numbers, publishers = self.generator.getNumbers()
+            numbers, publishers = self.generator.getNumbers(request.num_queues)
             print("[REQUESTED NUMBERS: EXITO] Vector de numeros creados con exito:")
             print(f"Numeros: {numbers}")
             print(f"Publishers:{publishers}\n")
@@ -31,7 +31,7 @@ class NumbersServicer(numbers_service_pb2_grpc.NumbersServiceServicer):
             return numbers_service_pb2.NumbersResponse()
 
         return numbers_service_pb2.NumbersResponse(
-            num1=numbers[0], num2=numbers[1], num3=numbers[2], publishers=publishers
+            numbers=numbers, publishers=publishers
         )
 
     def receiveResult(self, request, context):

@@ -11,7 +11,7 @@ from grpc_services.utils.user_stats import UserStats
 
 def serve(host: str, port: str, workers: int, criteria: str):
     # utilidades a usar
-    number_generator = Generate_Numbers()  # generador de nums
+    number_generator = Generate_Numbers(criteria=criteria)  # generador de nums
     user_stats = UserStats()  # estadisticas de trabajo de usuarios
 
     # añadimos el servicio a publicar, que es NumbersServicer
@@ -52,11 +52,16 @@ def main():
         host = sys.argv[1] if len(sys.argv) > 1 else "0.0.0.0"
         port = int(sys.argv[2]) if len(sys.argv) > 2 else 8080
         max_workers = int(sys.argv[3]) if len(sys.argv) > 3 else 10
-        criteria = sys.argv[4] if len(sys.argv) > 4 else ValueError()
-    except (ValueError, IndexError):
-        host, port, max_workers = "0.0.0.0", 50051, 10
 
-    serve(host, port, max_workers, criteria)
+        if len(sys.argv) > 4:
+            criteria = sys.argv[4]
+        else:
+            raise ValueError("No se proporciono criterio para inicio")
+
+        serve(host, port, max_workers, criteria)
+
+    except (ValueError, IndexError) as e:
+        print(f"[SERVER: Inicio] {e}")
 
 
 if __name__ == "__main__":

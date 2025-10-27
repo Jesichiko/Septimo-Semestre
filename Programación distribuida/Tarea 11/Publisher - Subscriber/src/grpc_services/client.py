@@ -1,7 +1,7 @@
-import sys
-import grpc
 import random
-from google.protobuf import empty_pb2
+import sys
+
+import grpc
 
 from grpc_services.protos import numbers_service_pb2, numbers_service_pb2_grpc
 
@@ -13,7 +13,7 @@ def execute_operation(numbers: list[float]) -> float:
     return result
 
 
-def send_request_numbers(server_address: str) -> tuple(list[int], list[str]):
+def send_request_numbers(server_address: str) -> tuple[list[int], list[str]]:
     try:
         with grpc.insecure_channel(server_address) as channel:
             stub = numbers_service_pb2_grpc.NumbersServiceStub(channel)
@@ -60,7 +60,7 @@ def send_result(
 
 
 def main():
-    # Argumentos: python client.py <server_ip> <server_port> <client_ip> <client_port>
+    # Argumentos: python client.py <server_ip> <server_port> <port>
     server_ip = sys.argv[1] if len(sys.argv) > 1 else "0.0.0.0"
     client_ip = sys.argv[2] if len(sys.argv) > 3 else "0.0.0.0"
     port = int(sys.argv[3]) if len(sys.argv) > 4 else 8080

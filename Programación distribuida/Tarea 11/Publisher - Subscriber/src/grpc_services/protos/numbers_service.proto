@@ -1,20 +1,16 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-
 service NumbersService {
   rpc getNumbers(NumbersRequest) returns (NumbersResponse) {}
   rpc receiveResult(ResultRequest) returns (ResultResponse) {}
 }
 
-message NumbersRequest{
-  int num_queues = 1;
+message NumbersRequest {
+  int32 num_queues = 1;
 }
 
 message NumbersResponse {
-  double num1 = 1;
-  double num2 = 2;
-  double num3 = 3;
+  repeated double numbers = 1;
   repeated string publishers = 4;
 }
 
