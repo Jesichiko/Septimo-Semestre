@@ -60,9 +60,15 @@ class Generate_Numbers:
             num3 = random.randint(1, 1000)
             triplet_tuple = (num1, num2, num3)
 
-            if triplet_tuple in self.seen:
-                attempts += 1
-                continue
+            # lockeamos por posible race condition:
+            # si dos clientes generan conjuntos iguales
+            # puede que ambos lo esten verificando al mismo tiempo
+            with self.lock:
+                if triplet_tuple in self.seen:
+                    attempts += 1
+                    continue
+                self.seen.add(triplet_tuple)
+                self.count += 1
 
             # Aplicamos criterio para determinar la cola
             triplet_list = [int(num1), int(num2), int(num3)]
@@ -72,39 +78,36 @@ class Generate_Numbers:
                 attempts += 1
                 continue  # no agregamos el conjunto creado ya que la cola no esta disponible
 
-            self.seen.add(triplet_tuple)
             target_queue.put(triplet_list)
-            self.count += 1
             return triplet_list, queue_name
 
         raise Exception("No se pudo generar tercia unica despues de multiples intentos")
 
     def getNumbers(self, num_queues: int) -> tuple[list[int], list[str]]:
-        with self.lock:
-            available_queues = ["principal", "secundaria", "terciaria"]
+        available_queues = ["principal", "secundaria", "terciaria"]
 
-            if self.count >= self.max_results:
-                raise MemoryError(
-                    "[GENERADOR NUMS: LIMITE ALCANZADO] ya se generaron todas las tercias posibles"
-                )
-            if num_queues not in [1, 2]:
-                raise ValueError(f"num_queues debe ser 1 o 2, se recibio: {num_queues}")
-
-            # generamos primer conjunto de numeros
-            # (siempre se generara al menos uno)
-            first_triplet, first_queue = self._generate_unique_triplet(
-                available_queues=available_queues
+        if self.count >= self.max_results:
+            raise MemoryError(
+                "[GENERADOR NUMS: LIMITE ALCANZADO] ya se generaron todas las tercias posibles"
             )
+        if num_queues not in [1, 2]:
+            raise ValueError(f"num_queues debe ser 1 o 2, se recibio: {num_queues}")
 
-            # Si solo pidio 1 cola retornamos ese conjunto
-            if num_queues == 1:
-                return first_triplet, [first_queue]
+        # generamos primer conjunto de numeros
+        # (siempre se generara al menos uno)
+        first_triplet, first_queue = self._generate_unique_triplet(
+            available_queues=available_queues
+        )
 
-            # Si pidieron 2 colas generamos segundo conjunto de una cola diferente
-            available_queues.remove(first_queue)
-            second_triplet, second_queue = self._generate_unique_triplet(
-                available_queues=available_queues
-            )
+        # Si solo pidio 1 cola retornamos ese conjunto
+        if num_queues == 1:
+            return first_triplet, [first_queue]
 
-            # retornamos la combinacion de conjuntos y el nombre de colas
-            return first_triplet + second_triplet, [first_queue, second_queue]
+        # Si pidieron 2 colas generamos segundo conjunto de una cola diferente
+        available_queues.remove(first_queue)
+        second_triplet, second_queue = self._generate_unique_triplet(
+            available_queues=available_queues
+        )
+
+        # retornamos la combinacion de conjuntos y el nombre de colas
+        return first_triplet + second_triplet, [first_queue, second_queue]
